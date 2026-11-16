@@ -746,8 +746,9 @@
   @media (max-width: 480px) {
     body { padding: 6px 4px 20px 4px; }
     .app-container { gap: 8px; }
-    .profile-bar { padding: 5px 8px; border-radius: 8px; gap: 6px; }
+    .profile-bar { padding: 6px 8px; border-radius: 8px; gap: 6px; flex-wrap: wrap; }
     .portal-home-btn { padding: 4px 8px; font-size: 11px; border-radius: 6px; }
+    .portal-logout-btn { padding: 4px 8px !important; font-size: 11px !important; border-radius: 6px !important; margin-left: auto; }
     .profile-info { font-size: 11.5px; }
     .demo-pill { font-size: 10px; padding: 3px 7px; }
     .theme-nav-card { padding: 10px; border-radius: 10px; }
@@ -771,16 +772,17 @@
 <body>
 <div class="app-container">
 
-  <!-- İLK SATIR: Home (Aktif Profilin Solunda) + Aktif Profil + Bulut Rozeti -->
+  <!-- İLK SATIR: Home (En Sol) + Aktif Profil + Bulut Rozeti + Oturumu Kapat (En Sağ) -->
   <div class="profile-bar">
     <div class="profile-bar-left">
       <a href="../" class="portal-home-btn" title="Ana Portala Dön (Tüm Dersler)">&#x1F3E0; Home</a>
+      <span class="demo-pill">&#x2728; Yeni Kılavuz Şablonu</span>
       <span class="profile-info">
         &#x1F464; Aktif Profil: <strong style="color:#38bdf8;">hkn</strong>
         <span class="cloud-badge" title="Supabase hamk_ders_ilerleme tablosu senkronizasyon örneği">&#x2601;&#xFE0F; Bulut Senkron (Örnek)</span>
       </span>
     </div>
-    <span class="demo-pill">&#x2728; Yeni Kılavuz Şablonu</span>
+    <a href="../?logout=1" class="portal-logout-btn" title="Oturumu Kapat" style="background:#dc2626;color:#ffffff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 4px rgba(220,38,38,0.35);">&#x1F6AA; Oturumu Kapat</a>
   </div>
 
   <!-- ÜST KISIM: TEMALAR (AÇILIR SEKME) + ÖZET / SORULAR MODLARI + İLERLEME -->

@@ -398,6 +398,59 @@
     visibility: visible;
     opacity: 1;
   }
+  .fw {
+    border-bottom: 1.5px dotted #0f766e;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.12s, color 0.12s;
+  }
+  .fw:hover, .fw.active-tip {
+    background: rgba(20, 184, 166, 0.16);
+    color: #5eead4;
+  }
+  #floating-word-tip {
+    position: fixed;
+    z-index: 9999;
+    background: #020617;
+    color: #5eead4;
+    border: 1px solid #14b8a6;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+    max-width: 260px;
+    pointer-events: none;
+    display: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+  }
+  .sum-tr-collapse {
+    display: none;
+    background: rgba(20, 184, 166, 0.08);
+    border: 1px solid rgba(20, 184, 166, 0.32);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13.5px;
+    color: #cbd5e1;
+  }
+  .sum-tr-collapse.open { display: block; }
+  .sum-tr-collapse ul { padding-left: 18px; display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+  .sum-head-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .tr-toggle-btn {
+    background: #0f172a;
+    border: 1px solid rgba(20, 184, 166, 0.45);
+    color: #14b8a6;
+    border-radius: 8px;
+    padding: 6px 9px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tr-toggle-btn.open {
+    background: rgba(20, 184, 166, 0.16);
+    color: #5eead4;
+  }
 
   /* 5. SUMMARY VIEW */
   .summary-panel, .quiz-panel {
@@ -909,25 +962,100 @@
     <span style="font-size:11px;">Örnek şablon ilerlemesi bu tarayıcıda yerelde saklanır (gerçek derslerde Supabase ile cihazlar arası eşitlenir).</span>
   </footer>
 </div>
+<div id="floating-word-tip" role="tooltip"></div>
 
 <script>
   const STATE_KEY = 'HAMK_ORNEK_FORMAT_STATE_V1';
+  const WORD_DICT = {
+    'luukudos': 'kemik dokusu',
+    'uusiutuu': 'yenilenir',
+    'koko': 'tüm',
+    'elämän': 'yaşamın',
+    'ajan': 'boyunca',
+    'elinikäisesti': 'ömür boyu',
+    'huippuluumassa': 'tepe kemik kütlesi',
+    'kasvaa': 'artar / büyür',
+    'saakka': 'kadar',
+    'tasapainossa': 'dengede',
+    'määrä': 'miktarı',
+    'alkaa': 'başlar',
+    'pienentyä': 'azalmaya',
+    'eteenpäin': 'itibaren',
+    'naisilla': 'kadınlarda',
+    'menopaussi': 'menopoz',
+    'estrogeenin': 'östrojenin',
+    'laskun': 'düşüşünün',
+    'vuoksi': 'nedeniyle',
+    'nopeuttaa': 'hızlandırır',
+    'huomattavasti': 'belirgin şekilde',
+    'luukatoa': 'kemik kaybını',
+    'osteoporoosi': 'osteoporoz',
+    'oireeton': 'belirtisiz',
+    'kivuton': 'ağrısız',
+    'ensimmäinen': 'ilk',
+    'oire': 'belirti',
+    'usein': 'genellikle',
+    'matalaenerginen': 'düşük enerjili',
+    'luunmurtuma': 'kemik kırığı',
+    'murtuman': 'kırığın',
+    'jälkeen': 'sonra',
+    'uuden': 'yeni',
+    'riski': 'riski',
+    'kasvaa': 'artar',
+    'moninkertaiseksi': 'katlanarak artar',
+    'luuliikunta': 'kemik egzersizi',
+    'vaatii': 'gerektirir',
+    'iskuja': 'darbe / yüklenme',
+    'vastusta': 'direnç',
+    'esimerkiksi': 'örneğin',
+    'kuntosali': 'spor salonu',
+    'porraskävely': 'merdiven yürüyüşü',
+    'tanssi': 'dans',
+    'uinti': 'yüzme',
+    'sydämelle': 'kalp için',
+    'lihaksille': 'kaslar için',
+    'hyödyllistä': 'faydalı',
+    'kannattele': 'taşımaz / desteklemez (kemiğe yük vermez)',
+    'luustoa': 'iskeleti',
+    'painovoimaa': 'yerçekimine',
+    'vastaan': 'karşı',
+    'seuranta': 'takip / izlem',
+    'teho': 'etki',
+    'käyttö': 'kullanım',
+    'ongelmat': 'sorunlar',
+    'kontrollit': 'kontroller',
+    'lääkehoito': 'ilaç tedavisi',
+    'vaikutus': 'etki',
+    'haittavaikutukset': 'yan etkiler',
+    'yhteisvaikutukset': 'ilaç etkileşimleri',
+    'laboratorioseuranta': 'laboratuvar takibi',
+    'verenpaine': 'kan basıncı',
+    'pulssi': 'nabız',
+    'iäkkäillä': 'yaşlılarda',
+    'monilääkitys': 'polifarmasi (çoklu ilaç)'
+  };
 
   const THEMES = [
     {
       id: 'tema1',
       title: 'Tema 1: Ikääntyminen & Luusto (Geriatria)',
-      desc: 'Kemik dokusu, yaşlanmayla kemik kütlesi değişimi ve osteoporoz',
+      desc: 'Fince ana özet + kelime üzerine gelince/dokununca Türkçe + opsiyonel tüm kart çevirisi',
       sections: [
         {
           id: 't1_s1',
           fiTitle: 'Luukudoksen uusiutuminen ja luun määrä',
           trTitle: 'Kemik dokusunun yenilenmesi ve kemik kütlesi değişimi',
           bullets: [
-            'Kemik dokusu <span class="highlight-term">(luukudos)</span> yaşam boyu kendini yeniler <span class="highlight-term">(uusiutuu koko elämän ajan)</span>; eski kemik yıkılırken yeni kemik yapılır.',
-            'Tepe kemik kütlesi <span class="highlight-term">(huippuluumassa)</span> yaklaşık <strong>20–30 yaşına kadar</strong> artar; ~40 yaşına kadar dengede kalır.',
-            'Kemik miktarı <span class="highlight-term">(luun määrä)</span> yaklaşık <strong>40 yaşından itibaren</strong> fizyolojik olarak azalmaya başlar (60 yaşta başlamaz!).',
-            'Kadınlarda menopoz <span class="highlight-term">(menopaussi)</span> östrojen korumasının düşmesiyle kemik kaybını <strong>belirgin biçimde hızlandırır</strong> <span class="highlight-term">(nopeuttaa)</span>.'
+            '<span class="highlight-term">Luukudos</span> (kemik dokusu) uusiutuu elinikäisesti; vanhaa luuta hajoaa ja uutta muodostuu tilalle.',
+            '<span class="highlight-term">Huippuluumassa</span> (tepe kemik kütlesi) kasvaa noin <strong>20–30-vuotiaaksi</strong> saakka ja pysyy tasapainossa ~40 ikävuoteen.',
+            'Luun määrä alkaa pienentyä fysiologisesti noin <strong>40 vuoden iästä</strong> eteenpäin (ei vasta 60 vuoden iässä).',
+            'Naisilla <span class="highlight-term">menopaussi</span> (menopoz) nopeuttaa estrogeenin laskun vuoksi luukatoa huomattavasti.'
+          ],
+          trBullets: [
+            'Kemik dokusu yaşam boyu yenilenir; eski kemik yıkılırken yeni kemik yapılır.',
+            'Doruk kemik kütlesi yaklaşık 20–30 yaşına kadar artar ve ~40 yaşına kadar dengede kalır.',
+            'Kemik miktarı fizyolojik olarak ~40 yaşından itibaren azalmaya başlar (60 yaşta değil!).',
+            'Kadınlarda menopoz, östrojen düşüşü nedeniyle kemik kaybını belirgin şekilde hızlandırır.'
           ],
           table: {
             headers: ['Dönem / Durum (Fince)', 'Klinik Seyir (Türkçe)', 'Sınav Notu'],
@@ -946,10 +1074,16 @@
           fiTitle: 'Osteoporoosi, oireet ja luuliikunta',
           trTitle: 'Osteoporoz, belirtiler ve kemik egzersizi',
           bullets: [
-            'Osteoporoz <span class="highlight-term">(osteoporoosi)</span> kırık oluşana kadar tamamen sessiz ve ağrısızdır; ilk belirti genellikle kemik kırığıdır <span class="highlight-term">(luunmurtuma)</span>.',
-            'İlk osteoporotik kırığı geçiren hastada yeni kırık riski diğer nüfusa göre <strong>2–4 kat</strong> artar.',
-            'Kemik egzersizi <span class="highlight-term">(luuliikunta)</span> yerçekimine karşı yük ve darbe gerektirir: spor salonu <span class="highlight-term">(kuntosali)</span>, merdiven yürüyüşü <span class="highlight-term">(porraskävely)</span>, dans <span class="highlight-term">(tanssi)</span>.',
-            'Yüzme <span class="highlight-term">(uinti)</span> kalp ve kaslar için iyidir ancak su vücut ağırlığını taşıdığından kemik yoğunluğu egzersizi sayılmaz.'
+            '<span class="highlight-term">Osteoporoosi</span> (osteoporoz) on täysin oireeton ja kivuton ennen murtumaa; ensimmäinen oire on usein matalaenerginen <span class="highlight-term">luunmurtuma</span> (kemik kırığı).',
+            'Ensimmäisen osteoporoottisen murtuman jälkeen uuden murtuman riski kasvaa <strong>2–4-kertaiseksi</strong> muuhun väestöön verrattuna.',
+            '<span class="highlight-term">Luuliikunta</span> (kemik egzersizi) vaatii iskuja ja painovoimaa vastaan tehtävää kuormitusta: esim. kuntosali, porraskävely ja tanssi.',
+            'Uinti on sydämelle ja lihaksille hyödyllistä, mutta se ei kuormita luustoa painovoimaa vastaan eikä korvaa luuliikuntaa.'
+          ],
+          trBullets: [
+            'Osteoporoz kırık oluşana kadar tamamen sessiz ve ağrısızdır; ilk belirti genellikle düşük enerjili kemik kırığıdır.',
+            'İlk osteoporotik kırık sonrası yeni kırık riski diğer nüfusa göre 2–4 kat artar.',
+            'Kemik egzersizi yerçekimine karşı darbe ve yük gerektirir: spor salonu, merdiven yürüyüşü ve dans.',
+            'Yüzme kalp ve kaslar için yararlıdır ancak kemiğe yerçekimi yükü bindirmez ve luuliikunta yerine geçmez.'
           ],
           ansa: 'Ağrı (kipu) veya kas erimesi tek başına erken osteoporoz belirtisi değildir; ilk belirti kırık (luunmurtuma) olur.',
           tarppi: 'Osteoporoz = Kırık olana kadar sessiz! Kemik için yük bindiren hareket gerekir, yüzme değildir.',
@@ -1113,10 +1247,16 @@
           fiTitle: 'Lääkehoidon seurannan TKOK-muistisääntö',
           trTitle: 'İlaç tedavisi takibinde TKOK hatırlama kuralı',
           bullets: [
-            '<strong>T — <span class="highlight-term">Teho</span> (Etki):</strong> İlaç beklenen tedavi edici etkiyi gösteriyor mu?',
-            '<strong>K — <span class="highlight-term">Käyttö</span> (Kullanım):</strong> Hasta ilacı doğru dozda, saatte ve doğru teknikle alıyor mu?',
-            '<strong>O — <span class="highlight-term">Ongelmat</span> (Sorunlar):</strong> Yan etki, ilaç etkileşimi veya düşme/baş dönmesi gibi problem var mı?',
-            '<strong>K — <span class="highlight-term">Kontrollit</span> (Kontroller):</strong> Gerekli laboratuvar veya tansiyon/nabız takipleri yapılıyor mu?'
+            '<strong>T — <span class="highlight-term">Teho</span> (Etki):</strong> Vaikuttaako lääke odotetulla tavalla oireisiin ja sairauden hallintaan?',
+            '<strong>K — <span class="highlight-term">Käyttö</span> (Kullanım):</strong> Ottaako iäkäs potilas lääkkeen oikealla annoksella, oikeaan aikaan ja oikealla tekniikalla?',
+            '<strong>O — <span class="highlight-term">Ongelmat</span> (Sorunlar):</strong> Ilmeneekö haittavaikutuksia, yhteisvaikutuksia tai kaatumisriskiä ja huimausta?',
+            '<strong>K — <span class="highlight-term">Kontrollit</span> (Kontroller):</strong> Toteutuvatko laboratorioseuranta, verenpaine ja pulssi suunnitellusti?'
+          ],
+          trBullets: [
+            'T — Teho (Etki): İlaç semptomlar ve hastalık kontrolü üzerinde beklenen etkiyi gösteriyor mu?',
+            'K — Käyttö (Kullanım): Yaşlı hasta ilacı doğru dozda, doğru saatte ve doğru teknikle alıyor mu?',
+            'O — Ongelmat (Sorunlar): Yan etki, ilaç etkileşimi, baş dönmesi veya düşme riski ortaya çıkıyor mu?',
+            'K — Kontrollit (Kontroller): Laboratuvar takibi, tansiyon ve nabız kontrolleri planlandığı şekilde yapılıyor mu?'
           ],
           ansa: 'İlaç takibindeki TKOK ile genel klinik durum değerlendirmesindeki TKOK (Tajunta-Kipu-Orientaatio-Käytös) karıştırılmamalıdır!',
           tarppi: 'İlaç TKOK: Teho – Käyttö – ONGELMAT – Kontrollit.',
@@ -1461,6 +1601,79 @@
     document.getElementById('prog-quiz-bar').style.width = (totalQ ? Math.round((solvedCnt / totalQ) * 100) : 0) + '%';
   }
 
+  function toggleTrCollapse(secId, btn) {
+    const box = document.getElementById('sum-tr-' + secId);
+    if (!box) return;
+    const isOpen = box.classList.toggle('open');
+    if (btn) {
+      btn.classList.toggle('open', isOpen);
+      btn.textContent = isOpen ? '🇹🇷 Çeviriyi Gizle' : '🇹🇷 Türkçe';
+    }
+  }
+
+  function applyFloatingDictTooltips(rootEl) {
+    if (!rootEl || typeof WORD_DICT !== 'object') return;
+    const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, null);
+    const nodes = [];
+    let n;
+    while ((n = walker.nextNode())) {
+      if (!n.nodeValue || !n.nodeValue.trim()) continue;
+      const p = n.parentElement;
+      if (!p || p.closest('.word, .fw, .sum-tr-collapse, .sum-tr-title, script, style, button')) continue;
+      nodes.push(n);
+    }
+    const wordRe = /([A-Za-zÅÄÖåäö-]+(?:[–-][A-Za-zÅÄÖåäö]+)*)/g;
+    for (const textNode of nodes) {
+      const txt = textNode.nodeValue;
+      let lastIdx = 0;
+      let match;
+      let frag = null;
+      wordRe.lastIndex = 0;
+      while ((match = wordRe.exec(txt)) !== null) {
+        const raw = match[1];
+        const key = raw.toLowerCase();
+        const tr = WORD_DICT[key];
+        if (!tr) continue;
+        if (!frag) frag = document.createDocumentFragment();
+        if (match.index > lastIdx) frag.appendChild(document.createTextNode(txt.slice(lastIdx, match.index)));
+        const sp = document.createElement('span');
+        sp.className = 'fw';
+        sp.dataset.tr = tr;
+        sp.textContent = raw;
+        frag.appendChild(sp);
+        lastIdx = wordRe.lastIndex;
+      }
+      if (frag) {
+        if (lastIdx < txt.length) frag.appendChild(document.createTextNode(txt.slice(lastIdx)));
+        textNode.parentNode.replaceChild(frag, textNode);
+      }
+    }
+  }
+
+  function showFloatingTipFor(el) {
+    const tip = document.getElementById('floating-word-tip');
+    if (!tip || !el || !el.dataset || !el.dataset.tr) return;
+    document.querySelectorAll('.fw.active-tip').forEach(x => { if (x !== el) x.classList.remove('active-tip'); });
+    el.classList.add('active-tip');
+    tip.textContent = el.dataset.tr;
+    tip.style.display = 'block';
+    const rect = el.getBoundingClientRect();
+    const tw = tip.offsetWidth || 160;
+    const th = tip.offsetHeight || 30;
+    let left = rect.left + rect.width / 2 - tw / 2;
+    left = Math.max(8, Math.min(window.innerWidth - tw - 8, left));
+    let top = rect.top - th - 8;
+    if (top < 8) top = rect.bottom + 8;
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function hideFloatingTip() {
+    const tip = document.getElementById('floating-word-tip');
+    if (tip) tip.style.display = 'none';
+    document.querySelectorAll('.fw.active-tip').forEach(x => x.classList.remove('active-tip'));
+  }
+
   function renderSummary() {
     const t = getActiveTheme();
     const ts = getActiveTest();
@@ -1471,6 +1684,7 @@
     }
     let html = t.sections.map((s, idx) => {
       const isRead = !!appState.readSections[s.id];
+      const hasTr = Array.isArray(s.trBullets) && s.trBullets.length > 0;
       const tableHtml = s.table ? `
         <table class="sum-table">
           <thead><tr>${s.table.headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
@@ -1483,11 +1697,15 @@
               <div class="sum-fi-title">${idx + 1}. ${s.fiTitle}</div>
               <div class="sum-tr-title">${s.trTitle}</div>
             </div>
-            <button type="button" class="mark-read-btn ${isRead ? 'done' : ''}" onclick="toggleSectionRead('${s.id}')">
-              ${isRead ? '&#x2713; Okundu' : '&#x2610; Okundu İşaretle'}
-            </button>
+            <div class="sum-head-actions">
+              ${hasTr ? `<button type="button" class="tr-toggle-btn" onclick="toggleTrCollapse('${s.id}', this)">&#x1F1F9;&#x1F1F7; T&uuml;rk&ccedil;e</button>` : ''}
+              <button type="button" class="mark-read-btn ${isRead ? 'done' : ''}" onclick="toggleSectionRead('${s.id}')">
+                ${isRead ? '&#x2713; Okundu' : '&#x2610; Okundu İşaretle'}
+              </button>
+            </div>
           </div>
           <ul class="sum-list">${s.bullets.map(b => `<li>${b}</li>`).join('')}</ul>
+          ${hasTr ? `<div class="sum-tr-collapse" id="sum-tr-${s.id}"><strong style="color:#14b8a6;">&#x1F1F9;&#x1F1F7; T&uuml;rk&ccedil;e Tam &Ccedil;eviri:</strong><ul>${s.trBullets.map(b => `<li>${b}</li>`).join('')}</ul></div>` : ''}
           ${tableHtml}
           <div class="callout-box callout-ansa"><strong>&#x26A0;&#xFE0F; Sınav Tuzağı (Ansa):</strong> ${s.ansa}</div>
           <div class="callout-box callout-tarppi"><strong>&#x1F3AF; Altın Kural (Tärppi):</strong> ${s.tarppi}</div>
@@ -1497,6 +1715,7 @@
     }).join('');
     html += `<button type="button" class="go-quiz-cta" onclick="switchThemeMode('quiz')">&#x1F4DD; ${ts.title} Testine Geç &rarr;</button>`;
     container.innerHTML = html;
+    applyFloatingDictTooltips(container);
   }
 
   function toggleSectionRead(secId) {
@@ -1837,7 +2056,25 @@
       activeWordTimer = setTimeout(() => el.classList.remove('active-touch'), 3500);
     }
   }
+  let fwTimer = null;
+  document.addEventListener('mouseover', e => {
+    const fw = e.target.closest && e.target.closest('.fw');
+    if (fw) showFloatingTipFor(fw);
+  });
+  document.addEventListener('mouseout', e => {
+    const fw = e.target.closest && e.target.closest('.fw');
+    if (fw && !fw.contains(e.relatedTarget)) hideFloatingTip();
+  });
   document.addEventListener('click', e => {
+    const fw = e.target.closest && e.target.closest('.fw');
+    if (fw) {
+      e.stopPropagation();
+      showFloatingTipFor(fw);
+      if (fwTimer) clearTimeout(fwTimer);
+      fwTimer = setTimeout(hideFloatingTip, 3500);
+      return;
+    }
+    hideFloatingTip();
     if (!e.target.classList.contains('word')) {
       document.querySelectorAll('.word.active-touch').forEach(w => w.classList.remove('active-touch'));
     }

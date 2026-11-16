@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Örnek Format — HAMK Test ve Özet Kılavuzu Şablonu</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --primary: #0d9488;
+    --primary-light: #14b8a6;
+    --accent: #38bdf8;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border: #334155;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warn: #f59e0b;
+    --steel: #4f7cac;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 16px 12px 36px 12px;
+    line-height: 1.6;
+  }
+  .app-container {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* 1. TOP PROFILE BAR (with Home left of Aktif Profil) */
+  .profile-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    background: var(--card-bg);
+    border: 1px solid #475569;
+    border-radius: 12px;
+    padding: 8px 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .profile-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  .portal-home-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid #475569;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 12.5px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .portal-home-btn:hover { border-color: var(--primary-light); background: #162235; }
+  .profile-info {
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .cloud-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #34d399;
+    white-space: nowrap;
+  }
+  .demo-pill {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    background: rgba(56, 189, 248, 0.14);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    color: var(--accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* 2. HEADER & DROPDOWN THEME SELECTOR (ACILIR SEKME) */
+  .theme-nav-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .course-heading-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .course-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #f1f5f9;
+  }
+  .course-subtitle {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* Dropdown Acilir Tema Sekmesi */
+  .theme-dropdown-wrap {
+    position: relative;
+  }
+  .theme-dropdown-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    background: #0b1322;
+    border: 1.5px solid var(--primary);
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: #f8fafc;
+    font-size: 14.5px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+  }
+  .theme-dropdown-btn:hover { background: #111c30; border-color: var(--primary-light); }
+  .theme-dd-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--primary-light);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .theme-dropdown-panel {
+    display: none;
+    position: relative;
+    margin-top: 6px;
+    background: #0b1322;
+    border: 1px solid #475569;
+    border-radius: 10px;
+    padding: 6px;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+  }
+  .theme-dropdown-panel.open { display: flex; }
+  .theme-option-btn {
+    width: 100%;
+    background: #131f33;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .theme-option-btn:hover { background: #1e293b; border-color: var(--accent); }
+  .theme-option-btn.active { background: rgba(13, 148, 136, 0.18); border-color: var(--primary-light); }
+  .theme-opt-title { font-size: 13.5px; font-weight: 700; color: #f1f5f9; }
+  .theme-opt-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+  .theme-opt-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-size: 11px; flex-shrink: 0; }
+  .pill-read { color: #34d399; font-weight: 700; }
+  .pill-quiz { color: var(--accent); font-weight: 600; }
+
+  /* Mode Switcher inside Selected Theme: Summary vs Quiz */
+  .theme-mode-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .theme-mode-btn {
+    padding: 10px 12px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: #0f172a;
+    color: #cbd5e1;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+  .theme-mode-btn.active {
+    background: var(--primary);
+    border-color: var(--primary-light);
+    color: #ffffff;
+  }
+
+  /* 3. PROGRESS OVERVIEW STRIP */
+  .progress-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    background: #131c2e;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .prog-item { display: flex; flex-direction: column; gap: 5px; }
+  .prog-top { display: flex; justify-content: space-between; font-size: 12px; color: #cbd5e1; }
+  .prog-bar-bg { height: 7px; background: #0f172a; border-radius: 9999px; overflow: hidden; border: 1px solid #273549; }
+  .prog-bar-fill { height: 100%; background: var(--primary-light); transition: width 0.25s ease; width: 0%; }
+  .prog-bar-fill.quiz { background: var(--accent); }
+
+  /* 4. HIGHLIGHTS & DOUBLE LAYER WORD TOOLTIPS */
+  .highlight-term {
+    color: var(--primary-light);
+    font-weight: 500; /* Kural: Asla bold yapilmaz */
+  }
+  .word {
+    color: #0d9488;
+    border-bottom: 1.5px dotted #0f766e;
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    padding: 0 1px;
+  }
+  .word.danger-word {
+    color: #f87171;
+    border-bottom: 1.5px dotted #ef4444;
+  }
+  .word .tooltip-box {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #020617;
+    color: #f8fafc;
+    border: 1px solid var(--primary-light);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    line-height: 1.3;
+    white-space: nowrap;
+    z-index: 40;
+    pointer-events: none;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+    transition: opacity 0.15s;
+  }
+  .word:hover .tooltip-box,
+  .word.active-touch .tooltip-box {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* 5. SUMMARY VIEW */
+  .summary-panel, .quiz-panel {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .summary-panel.active, .quiz-panel.active { display: flex; }
+
+  .summary-section-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.2s;
+  }
+  .summary-section-card.read { border-color: rgba(16, 185, 129, 0.55); }
+  .sum-sec-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .sum-fi-title { font-size: 16.5px; font-weight: 700; color: #f8fafc; }
+  .sum-tr-title { font-size: 13px; color: var(--primary-light); font-weight: 500; margin-top: 2px; }
+  .mark-read-btn {
+    background: #0f172a;
+    border: 1px solid #475569;
+    color: #cbd5e1;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .mark-read-btn.done {
+    background: rgba(16, 185, 129, 0.16);
+    border-color: var(--success);
+    color: #34d399;
+  }
+  .sum-list { padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: #cbd5e1; }
+  .sum-table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin-top: 4px; }
+  .sum-table th, .sum-table td { border: 1px solid var(--border); padding: 7px 9px; text-align: left; }
+  .sum-table th { background: #0f172a; color: var(--accent); font-size: 12.5px; }
+  .callout-box {
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .callout-ansa { background: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--warn); color: #fde68a; }
+  .callout-tarppi { background: rgba(16, 185, 129, 0.1); border-left: 4px solid var(--success); color: #d1fae5; }
+  .sum-source { font-size: 12px; color: var(--text-muted); border-top: 1px dashed var(--border); padding-top: 8px; }
+  .go-quiz-cta {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .go-quiz-cta:hover { background: var(--primary-light); }
+
+  /* 6. QUIZ PANEL */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .badge { background: #0f172a; border: 1px solid #475569; padding: 4px 9px; border-radius: 6px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .timers-wrapper { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .timer-select { background: #0f172a; color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 4px 6px; font-size: 12px; }
+  .timer-box { background: #0f172a; border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .timer-box.alarm { border-color: var(--danger); color: #f87171; animation: pulseBorder 1s infinite; }
+  @keyframes pulseBorder { 50% { box-shadow: 0 0 8px rgba(239,68,68,0.65); } }
+  .stats { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; white-space: nowrap; }
+  .stat-correct { color: #34d399; }
+  .stat-wrong { color: #f87171; }
+  .stat-star { color: #fbbf24; }
+
+  .mode-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .mode-btn {
+    flex: 1;
+    min-width: 130px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: #cbd5e1;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .mode-btn.active { background: #0d948833; border-color: var(--primary-light); color: #f8fafc; }
+
+  .question-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .question-card.alarm-frame { border-color: var(--danger); box-shadow: 0 0 14px rgba(239,68,68,0.35); }
+  .q-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-tag { font-size: 11.5px; font-weight: 800; color: var(--accent); letter-spacing: 0.4px; }
+  .star-btn {
+    background: #0f172a;
+    border: 1px solid #475569;
+    color: #cbd5e1;
+    border-radius: 7px;
+    padding: 4px 9px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .star-btn.starred { border-color: var(--warn); color: #fbbf24; background: rgba(245,158,11,0.12); }
+
+  .multi-notice {
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    color: #bae6fd;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 12.5px;
+  }
+  .q-text {
+    font-size: 19px;
+    line-height: 1.8;
+    color: #e2e8f0;
+    font-weight: 500;
+  }
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .opt-row {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    background: #0f172a;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .opt-row:hover { border-color: #64748b; }
+  .opt-row.selected { border-color: var(--accent); background: rgba(56, 189, 248, 0.1); }
+  .opt-row.correct { border-color: var(--success); background: rgba(16, 185, 129, 0.14); }
+  .opt-row.wrong { border-color: var(--danger); background: rgba(239, 68, 68, 0.14); }
+  .opt-letter {
+    font-weight: 800;
+    font-size: 16.5px;
+    color: #0d9488;
+    min-width: 28px;
+    position: relative;
+    display: inline-flex;
+    align-items: flex-start;
+    padding-top: 1px;
+  }
+  .opt-letter[data-tr]:hover::after,
+  .opt-letter.show-tr::after {
+    content: attr(data-tr);
+    position: absolute;
+    left: 0;
+    bottom: 115%;
+    min-width: 220px;
+    max-width: 320px;
+    background: #020617;
+    color: #f8fafc;
+    border: 1px solid var(--accent);
+    border-radius: 7px;
+    padding: 6px 9px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.35;
+    z-index: 50;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.65);
+    pointer-events: none;
+  }
+  .opt-text { font-size: 16.5px; line-height: 1.6; color: #e2e8f0; flex: 1; }
+
+  .action-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .btn-check {
+    flex: 2;
+    min-width: 170px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    padding: 11px;
+    font-size: 14.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-check:hover { background: var(--primary-light); }
+  .btn-preview {
+    flex: 1;
+    min-width: 150px;
+    background: #0f172a;
+    color: var(--accent);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    border-radius: 9px;
+    padding: 11px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* 7. FULL ANALYSIS CARD */
+  .analysis-card {
+    display: none;
+    background: #131d2f;
+    border: 1px solid #475569;
+    border-radius: 12px;
+    padding: 15px;
+    flex-direction: column;
+    gap: 11px;
+    font-size: 15.5px;
+    line-height: 1.7;
+  }
+  .analysis-card.show { display: flex; }
+  .analiz-status { font-size: 16px; font-weight: 800; }
+  .analiz-status.correct { color: #34d399; }
+  .analiz-status.wrong { color: #f87171; }
+  .analiz-status.preview { color: var(--accent); }
+  .tr-box { background: rgba(16, 185, 129, 0.08); border-left: 4px solid var(--success); border-radius: 8px; padding: 10px 12px; }
+  .clinical-box { background: var(--card-bg); border-left: 4px solid var(--accent); border-radius: 8px; padding: 10px 12px; }
+  .box-label { font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+
+  .options-analysis-list { display: flex; flex-direction: column; gap: 9px; margin-top: 4px; }
+  .opt-analysis-card {
+    background: #090e17;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 10px 12px;
+  }
+  .opt-analysis-card.is-corr { border-color: var(--success); }
+  .opt-analysis-card.is-wrong { border-color: var(--danger); }
+  .opt-analysis-title {
+    font-weight: 700;
+    color: var(--steel); /* Kural: Mat Celik Mavisi #4f7cac */
+    font-size: 14px;
+    line-height: 1.45;
+    margin-bottom: 5px;
+  }
+  .opt-status-badge {
+    float: right;
+    margin-left: 8px;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .badge-corr { background: rgba(16,185,129,0.16); color: #34d399; border: 1px solid var(--success); }
+  .badge-wrong { background: rgba(239,68,68,0.16); color: #f87171; border: 1px solid var(--danger); }
+  .opt-analysis-tr {
+    clear: both;
+    font-size: 13.5px;
+    color: #14b8a6;
+    font-weight: 500;
+    font-style: normal;
+    margin-bottom: 5px;
+    line-height: 1.45;
+  }
+  .opt-analysis-reason {
+    font-size: 13.5px;
+    color: #cbd5e1;
+    line-height: 1.5;
+  }
+  .tarppi-box { background: rgba(16,185,129,0.1); border-left: 4px solid var(--success); border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+  .summary-box { background: rgba(139,92,246,0.12); border-left: 4px solid #a78bfa; border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+  .source-box { font-size: 12px; color: var(--text-muted); border-top: 1px dashed var(--border); padding-top: 8px; }
+
+  .nav-bar {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1fr 1fr 42px;
+    gap: 6px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px;
+  }
+  .nav-btn {
+    background: #0f172a;
+    border: 1px solid #475569;
+    color: var(--text);
+    border-radius: 7px;
+    padding: 9px 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .nav-btn:hover { border-color: var(--primary-light); }
+
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: #94a3b8;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* MOBILE 360px - 480px (Samsung Galaxy A55) */
+  @media (max-width: 480px) {
+    body { padding: 6px 4px 20px 4px; }
+    .app-container { gap: 8px; }
+    .profile-bar { padding: 5px 8px; border-radius: 8px; gap: 6px; }
+    .portal-home-btn { padding: 4px 8px; font-size: 11px; border-radius: 6px; }
+    .profile-info { font-size: 11.5px; }
+    .demo-pill { font-size: 10px; padding: 3px 7px; }
+    .theme-nav-card { padding: 10px; border-radius: 10px; }
+    .course-title { font-size: 15.5px; }
+    .theme-dropdown-btn { font-size: 13px; padding: 9px 10px; }
+    .theme-mode-btn { font-size: 12px; padding: 8px 6px; }
+    .progress-strip { grid-template-columns: 1fr; gap: 8px; }
+    .top-bar { padding: 6px 8px; gap: 5px; }
+    .badge, .timer-select, .timer-box, .stats { font-size: 11px; }
+    .q-text { font-size: 15px; line-height: 1.45; }
+    .opt-text { font-size: 13.5px; line-height: 1.45; }
+    .opt-letter { font-size: 14px; min-width: 22px; }
+    .analysis-card { padding: 10px 8px; font-size: 12.5px; line-height: 1.45; }
+    .opt-analysis-title { font-size: 12.5px; }
+    .opt-analysis-tr, .opt-analysis-reason { font-size: 12px; }
+    .nav-bar { grid-template-columns: 1fr 1.15fr 0.95fr 0.95fr 34px; gap: 4px; padding: 5px; }
+    .nav-btn { font-size: 11px; padding: 7px 2px; min-height: 38px; line-height: 1.15; }
+  }
+</style>
+</head>
+<body>
+<div class="app-container">
+
+  <!-- İLK SATIR: Home (Aktif Profilin Solunda) + Aktif Profil + Bulut Rozeti -->
+  <div class="profile-bar">
+    <div class="profile-bar-left">
+      <a href="../" class="portal-home-btn" title="Ana Portala Dön (Tüm Dersler)">&#x1F3E0; Home</a>
+      <span class="profile-info">
+        &#x1F464; Aktif Profil: <strong style="color:#38bdf8;">hkn</strong>
+        <span class="cloud-badge" title="Supabase hamk_ders_ilerleme tablosu senkronizasyon örneği">&#x2601;&#xFE0F; Bulut Senkron (Örnek)</span>
+      </span>
+    </div>
+    <span class="demo-pill">&#x2728; Yeni Kılavuz Şablonu</span>
+  </div>
+
+  <!-- ÜST KISIM: TEMALAR (AÇILIR SEKME) + ÖZET / SORULAR MODLARI + İLERLEME -->
+  <div class="theme-nav-card">
+    <div class="course-heading-row">
+      <div>
+        <div class="course-title">&#x1F4DA; Örnek Ders Formatı — ~20 Sayfa Tema Özeti + 30 Çeşitli HAMK Sorusu</div>
+        <div class="course-subtitle">Yeni kılavuza göre: Üstte açılır tema sekmesi; her temada ~20 sayfalık kapsamlı modüler özet (okuma %) + özeti pekiştiren 30 farklı HAMK tarzı soru ve Fince/#14b8a6 yeşil Türkçe/gerekçeli tam analiz.</div>
+      </div>
+    </div>
+
+    <div class="theme-dropdown-wrap">
+      <button type="button" class="theme-dropdown-btn" id="theme-dd-btn" onclick="toggleThemeDropdown()">
+        <span id="active-theme-label">&#x1F4C2; Tema 1: Ikääntyminen &amp; Luusto</span>
+        <span class="theme-dd-meta">
+          <span id="active-theme-badge">Özet %0 • Soru 1/2</span>
+          <span>&#x25BE;</span>
+        </span>
+      </button>
+      <div class="theme-dropdown-panel" id="theme-dd-panel"></div>
+    </div>
+
+    <div class="theme-mode-tabs">
+      <button type="button" class="theme-mode-btn active" id="mode-tab-summary" onclick="switchThemeMode('summary')">
+        &#x1F4D6; Tema Özeti (Fince + Türkçe)
+      </button>
+      <button type="button" class="theme-mode-btn" id="mode-tab-quiz" onclick="switchThemeMode('quiz')">
+        &#x1F4DD; Tema Soruları (Test)
+      </button>
+    </div>
+
+    <div class="progress-strip">
+      <div class="prog-item">
+        <div class="prog-top">
+          <span>&#x1F4D6; Özet Okuma İlerlemesi</span>
+          <strong id="prog-read-text" style="color:#34d399;">%0 (0/2 bölüm)</strong>
+        </div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" id="prog-read-bar"></div></div>
+      </div>
+      <div class="prog-item">
+        <div class="prog-top">
+          <span id="prog-quiz-pos">&#x1F4DD; Kalınan Yer: Soru 1 / 2</span>
+          <strong id="prog-quiz-pct" style="color:#38bdf8;">0 çözüldü</strong>
+        </div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill quiz" id="prog-quiz-bar"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GÖRÜNÜM 1: TEMA ÖZETİ -->
+  <div class="summary-panel active" id="summary-panel"></div>
+
+  <!-- GÖRÜNÜM 2: TEMA SORULARI (İNTERAKTİF TEST) -->
+  <div class="quiz-panel" id="quiz-panel">
+    <div class="top-bar">
+      <span class="badge" id="badge-title">&#x1F4C4; KYSYMYS 1 / 2</span>
+      <div class="timers-wrapper">
+        <select id="timer-setting" class="timer-select" onchange="changeTimerDuration(this.value)" title="Soru Süresi">
+          <option value="20">&#x26A1; 20 sn</option>
+          <option value="30">&#x26A1; 30 sn</option>
+          <option value="45">&#x26A1; 45 sn</option>
+          <option value="60">&#x23F1;&#xFE0F; 1.0 dk</option>
+          <option value="0">&#x267E;&#xFE0F; Süresiz</option>
+        </select>
+        <div class="timer-box" id="timer-display">&#x23F3; <span id="time-left">00:20</span></div>
+        <div class="timer-box" id="total-timer-display">&#x23F1;&#xFE0F; <span id="total-time-left">00:00</span></div>
+      </div>
+      <div class="stats">
+        <span class="stat-correct">&#x2713; <span id="count-correct">0</span></span>
+        <span class="stat-wrong">&#x2717; <span id="count-wrong">0</span></span>
+        <span class="stat-star">&#x2B50; <span id="count-stars">0</span></span>
+      </div>
+    </div>
+
+    <div class="mode-selector">
+      <button type="button" class="mode-btn active" id="pool-all" onclick="setPoolMode('all')">&#x1F4DA; Tüm Sorular (<span id="pool-all-cnt">2</span>)</button>
+      <button type="button" class="mode-btn" id="pool-wrong" onclick="setPoolMode('wrong')">&#x274C; Hatalarım (<span id="pool-wrong-cnt">0</span>)</button>
+      <button type="button" class="mode-btn" id="pool-star" onclick="setPoolMode('star')">&#x2B50; Yıldızlı (<span id="pool-star-cnt">0</span>)</button>
+    </div>
+
+    <div class="question-card" id="question-card">
+      <div class="q-meta-row">
+        <span class="section-tag" id="section-title">TEMA 1 — GERIATRIA</span>
+        <button type="button" class="star-btn" id="star-btn" onclick="toggleStar()">&#x2B50; Yıldızla</button>
+      </div>
+      <div class="multi-notice" id="multi-notice" style="display:none;"></div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options-list" id="options-list"></div>
+      <div class="action-row">
+        <button type="button" class="btn-check" id="btn-check" onclick="submitAnswer()">&#x2713; Seçimi Kontrol Et</button>
+        <button type="button" class="btn-preview" onclick="revealAnalysisPreview()">&#x1F441;&#xFE0F; Örnek Tam Analizi Gör</button>
+      </div>
+      <div class="analysis-card" id="analysis-card"></div>
+    </div>
+
+    <div class="nav-bar">
+      <a href="../" class="nav-btn">&#x1F3E0; Ana Sayfa</a>
+      <button type="button" class="nav-btn" onclick="repeatQuestion()">&#x1F504; Tekrarla</button>
+      <button type="button" class="nav-btn" onclick="prevQuestion()">&#x2B05;&#xFE0F; Önceki</button>
+      <button type="button" class="nav-btn" onclick="nextQuestion()">Sıradaki &#x27A1;&#xFE0F;</button>
+      <button type="button" class="nav-btn" id="btn-fullscreen" onclick="toggleFullScreen()" title="Tam Ekran">&#x26F6;</button>
+    </div>
+  </div>
+
+  <footer>
+    <span>Tasarım: <strong>By Hkn</strong> &mdash; Allah razı olsun &#x1F932;</span>
+    <span style="font-size:11px;">Örnek şablon ilerlemesi bu tarayıcıda yerelde saklanır (gerçek derslerde Supabase ile cihazlar arası eşitlenir).</span>
+  </footer>
+</div>
+
+<script>
+  const STATE_KEY = 'HAMK_ORNEK_FORMAT_STATE_V1';
+
+  const THEMES = [
+    {
+      id: 'tema1',
+      title: 'Tema 1: Ikääntyminen & Luusto (Geriatria)',
+      desc: 'Kemik dokusu, yaşlanmayla kemik kütlesi değişimi ve osteoporoz',
+      sections: [
+        {
+          id: 't1_s1',
+          fiTitle: 'Luukudoksen uusiutuminen ja luun määrä',
+          trTitle: 'Kemik dokusunun yenilenmesi ve kemik kütlesi değişimi',
+          bullets: [
+            'Kemik dokusu <span class="highlight-term">(luukudos)</span> yaşam boyu kendini yeniler <span class="highlight-term">(uusiutuu koko elämän ajan)</span>; eski kemik yıkılırken yeni kemik yapılır.',
+            'Tepe kemik kütlesi <span class="highlight-term">(huippuluumassa)</span> yaklaşık <strong>20–30 yaşına kadar</strong> artar; ~40 yaşına kadar dengede kalır.',
+            'Kemik miktarı <span class="highlight-term">(luun määrä)</span> yaklaşık <strong>40 yaşından itibaren</strong> fizyolojik olarak azalmaya başlar (60 yaşta başlamaz!).',
+            'Kadınlarda menopoz <span class="highlight-term">(menopaussi)</span> östrojen korumasının düşmesiyle kemik kaybını <strong>belirgin biçimde hızlandırır</strong> <span class="highlight-term">(nopeuttaa)</span>.'
+          ],
+          table: {
+            headers: ['Dönem / Durum (Fince)', 'Klinik Seyir (Türkçe)', 'Sınav Notu'],
+            rows: [
+              ['20–30-vuotiaaksi saakka', 'Kemik miktarı artar (tepe kütle)', 'Kasvaa 20–30 v. saakka'],
+              ['~40 v. eteenpäin', 'Kemik kaybı başlar', '60 v. tuzaktır — YANLIŞ!'],
+              ['Naisilla menopaussi', 'Kemik yıkımı hızlanır (nopeuttaa)', 'Hidastaa diyen şık YANLIŞ!']
+            ]
+          },
+          ansa: 'Sınavda en sık yapılan tuzak: "60 yaşından itibaren azalır" (doğrusu ~40 yaş) ve "menopoz yavaşlatır" (doğrusu hızlandırır) ifadeleridir.',
+          tarppi: '20–30 yaş zirve | ~40 yaş düşüş | Menopoz hızlandırır | Yenilenme yaşam boyu sürer.',
+          source: 'Geriatrian_Tentti_20_20_TAYDELLINEN.md & Käypä hoito: Osteoporoosi'
+        },
+        {
+          id: 't1_s2',
+          fiTitle: 'Osteoporoosi, oireet ja luuliikunta',
+          trTitle: 'Osteoporoz, belirtiler ve kemik egzersizi',
+          bullets: [
+            'Osteoporoz <span class="highlight-term">(osteoporoosi)</span> kırık oluşana kadar tamamen sessiz ve ağrısızdır; ilk belirti genellikle kemik kırığıdır <span class="highlight-term">(luunmurtuma)</span>.',
+            'İlk osteoporotik kırığı geçiren hastada yeni kırık riski diğer nüfusa göre <strong>2–4 kat</strong> artar.',
+            'Kemik egzersizi <span class="highlight-term">(luuliikunta)</span> yerçekimine karşı yük ve darbe gerektirir: spor salonu <span class="highlight-term">(kuntosali)</span>, merdiven yürüyüşü <span class="highlight-term">(porraskävely)</span>, dans <span class="highlight-term">(tanssi)</span>.',
+            'Yüzme <span class="highlight-term">(uinti)</span> kalp ve kaslar için iyidir ancak su vücut ağırlığını taşıdığından kemik yoğunluğu egzersizi sayılmaz.'
+          ],
+          ansa: 'Ağrı (kipu) veya kas erimesi tek başına erken osteoporoz belirtisi değildir; ilk belirti kırık (luunmurtuma) olur.',
+          tarppi: 'Osteoporoz = Kırık olana kadar sessiz! Kemik için yük bindiren hareket gerekir, yüzme değildir.',
+          source: 'Osteoporoosi_Kaypa_hoito.md & Geriatrian tenttimateriaali'
+        }
+      ],
+      questions: [
+        {
+          id: 101,
+          section: 'TEMA 1 — GERIATRIA (ÇOKLU SEÇİM)',
+          isMulti: true,
+          correctAnswer: 'A,B,D',
+          textHtml: '<span class="word" onclick="handleWord(this)">Valitse<span class="tooltip-box">seç</span></span> <span class="word" onclick="handleWord(this)">oikeat<span class="tooltip-box">doğru (çoğul)</span></span> <span class="word" onclick="handleWord(this)">vaihtoehdot<span class="tooltip-box">seçenekler</span></span> (<span class="word" onclick="handleWord(this)">Luukudos<span class="tooltip-box">kemik dokusu</span></span>)',
+          trSentence: 'Doğru seçenekleri seçiniz <span class="highlight-term">(Luukudos / Kemik dokusu)</span>: Kemik dokusu yaşam boyu yenilenir, kemik kütlesi 20–30 yaşına kadar artar ve menopoz kadınlarda kemik kaybını hızlandırır.',
+          clinical: 'Kemik dokusu osteoklastların yıkımı ve osteoblastların yapımı ile yaşam boyu yenilenir. Doruk kemik kütlesi 20–30 yaşta elde edilir, ~40 yaşından itibaren fizyolojik kayıp başlar ve menopozdaki östrojen düşüşü kaybı hızlandırır.',
+          tarppi: '20–30 yaş: Zirve | ~40 yaş: Kayıp başlar | Menopoz: Hızlandırır | Yaşam boyu yenilenme.',
+          summary: 'Kemik Metabolizması Yaşam Çizelgesi:\n• 0–30 yaş: Tepe kemik kütlesi (huippuluumassa) oluşur.\n• ~40 yaşa dek: Kemik yapımı ve yıkımı dengededir.\n• ~40+ yaş: Fizyolojik kemik kaybı başlar.\n• Menopoz: Östrojen düşüşüyle kadınlarda kayıp belirgin biçimde hızlanır (yenilenme ömür boyu sürer).',
+          source: 'Geriatrian_Tentti_20_20_TAYDELLINEN.md (Soru 1) & Käypä hoito',
+          options: [
+            {
+              letter: 'A',
+              isCorrect: true,
+              textHtml: '<span class="word" onclick="handleWord(this)">Luukudos<span class="tooltip-box">kemik dokusu</span></span> <span class="word" onclick="handleWord(this)">uusiutuu<span class="tooltip-box">yenilenir</span></span> <span class="word" onclick="handleWord(this)">koko<span class="tooltip-box">tüm</span></span> <span class="word" onclick="handleWord(this)">elämän<span class="tooltip-box">yaşam</span></span> <span class="word" onclick="handleWord(this)">ajan<span class="tooltip-box">boyunca</span></span>',
+              trSentence: 'Kemik dokusu tüm yaşam boyunca yenilenir.',
+              reason: 'Neden Doğru: Kemik canlı bir dokudur; yaşam boyu eski kemik yıkılıp (osteoklast) yerine yeni kemik yapılır (osteoblast / remodeling).'
+            },
+            {
+              letter: 'B',
+              isCorrect: true,
+              textHtml: '<span class="word" onclick="handleWord(this)">Naisilla<span class="tooltip-box">kadınlarda</span></span> <span class="word" onclick="handleWord(this)">menopaussi<span class="tooltip-box">menopoz</span></span> <span class="word" onclick="handleWord(this)">nopeuttaa<span class="tooltip-box">hızlandırır</span></span> <span class="word" onclick="handleWord(this)">luun<span class="tooltip-box">kemiğin</span></span> <span class="word" onclick="handleWord(this)">määrän<span class="tooltip-box">miktarının</span></span> <span class="word" onclick="handleWord(this)">pienentymistä<span class="tooltip-box">azalmasını</span></span>',
+              trSentence: 'Kadınlarda menopoz kemik miktarının azalmasını hızlandırır.',
+              reason: 'Neden Doğru: Menopozla östrojen hormonu azalır; östrojen kemik yıkımını baskıladığı için eksikliğinde kemik kaybı belirgin biçimde hızlanır.'
+            },
+            {
+              letter: 'C',
+              isCorrect: false,
+              textHtml: '<span class="word" onclick="handleWord(this)">Luun<span class="tooltip-box">kemiğin</span></span> <span class="word" onclick="handleWord(this)">määrä<span class="tooltip-box">miktarı</span></span> <span class="word" onclick="handleWord(this)">alkaa<span class="tooltip-box">başlar</span></span> <span class="word" onclick="handleWord(this)">pienentyä<span class="tooltip-box">azalmaya</span></span> <span class="word danger-word" onclick="handleWord(this)">60-vuoden<span class="tooltip-box">60 yaş (tuzak)</span></span> <span class="word" onclick="handleWord(this)">iästä<span class="tooltip-box">yaştan</span></span> <span class="word" onclick="handleWord(this)">eteenpäin<span class="tooltip-box">itibaren</span></span>',
+              trSentence: 'Kemik miktarı 60 yaşından itibaren azalmaya başlar.',
+              reason: 'Neden Yanlış: 60 yaş çok geç bir sınırdır. Doğrusu: Kemik kütlesi ~40 yaşından itibaren azalmaya başlar (60 yaşta değil).'
+            },
+            {
+              letter: 'D',
+              isCorrect: true,
+              textHtml: '<span class="word" onclick="handleWord(this)">Luun<span class="tooltip-box">kemiğin</span></span> <span class="word" onclick="handleWord(this)">määrä<span class="tooltip-box">miktarı</span></span> <span class="word" onclick="handleWord(this)">kasvaa<span class="tooltip-box">artar</span></span> <span class="word" onclick="handleWord(this)">20–30-vuotiaaksi<span class="tooltip-box">20–30 yaşına</span></span> <span class="word" onclick="handleWord(this)">saakka<span class="tooltip-box">kadar</span></span>',
+              trSentence: 'Kemik miktarı 20–30 yaşına kadar artar.',
+              reason: 'Neden Doğru: İskelet sisteminin doruk kemik kütlesi (huippuluumassa) 20–30 yaş aralığında oluşur.'
+            },
+            {
+              letter: 'E',
+              isCorrect: false,
+              textHtml: '<span class="word" onclick="handleWord(this)">Naisilla<span class="tooltip-box">kadınlarda</span></span> <span class="word" onclick="handleWord(this)">menopaussi<span class="tooltip-box">menopoz</span></span> <span class="word danger-word" onclick="handleWord(this)">hidastaa<span class="tooltip-box">yavaşlatır (tuzak)</span></span> <span class="word" onclick="handleWord(this)">luun<span class="tooltip-box">kemiğin</span></span> <span class="word" onclick="handleWord(this)">määrän<span class="tooltip-box">miktarının</span></span> <span class="word" onclick="handleWord(this)">pienentymistä<span class="tooltip-box">azalmasını</span></span>',
+              trSentence: 'Kadınlarda menopoz kemik miktarının azalmasını yavaşlatır.',
+              reason: 'Neden Yanlış: Tam tersi fiil verilmiştir (hidastaa = yavaşlatır). Doğrusu: Menopoz kemik kaybını yavaşlatmaz, östrojen düşüşü nedeniyle hızlandırır (nopeuttaa).'
+            }
+          ]
+        },
+        {
+          id: 102,
+          section: 'TEMA 1 — GERIATRIA (TEK SEÇİM)',
+          isMulti: false,
+          correctAnswer: 'A',
+          textHtml: '<span class="word" onclick="handleWord(this)">Osteoporoosin<span class="tooltip-box">osteoporozun</span></span> <span class="word" onclick="handleWord(this)">oireita<span class="tooltip-box">belirtileri</span></span> <span class="word" onclick="handleWord(this)">ovat<span class="tooltip-box">-dirler</span></span>',
+          trSentence: 'Osteoporozun <span class="highlight-term">(osteoporoosi)</span> belirtileri şunlardır: Kemik kırığı <span class="highlight-term">(luunmurtuma)</span>.',
+          clinical: 'Osteoporoz kemik mineral yoğunluğu azalmasına rağmen kırık gelişene kadar tamamen belirtisizdir. Düşük enerjili el bileği, omurga veya kalça kırığı hastalığın ilk bulgusudur.',
+          tarppi: 'Osteoporoz = Kırık olana kadar SESSİZ ve AĞRISIZ. İlk belirti: Luunmurtuma.',
+          summary: 'Osteoporozun Sessiz Seyri & Risk Tablosu:\n• Erken/kırıksız dönem: Tamamen ağrısız ve belirtisizdir; tanı DXA (T-skoru ≤ -2,5) ile konur.\n• İlk klinik bulgu: Düşük enerjili el bileği, omurga veya kalça kırığıdır (luunmurtuma).\n• İkincil risk: İlk kırık sonrası yeni kırık olasılığı 2–4 kat artar.',
+          source: 'Geriatrian_Tentti_20_20_TAYDELLINEN.md (Soru 2) & Käypä hoito',
+          options: [
+            {
+              letter: 'A',
+              isCorrect: true,
+              textHtml: '<span class="word" onclick="handleWord(this)">Luunmurtuma<span class="tooltip-box">kemik kırığı</span></span>',
+              trSentence: 'Kemik kırığı',
+              reason: 'Neden Doğru: Osteoporoz kırık oluşana kadar sessiz seyreder; klinik olarak kendini ilk kez düşük enerjili bir kemik kırığı (el bileği, omurga, kalça) ile gösterir.'
+            },
+            {
+              letter: 'B',
+              isCorrect: false,
+              textHtml: '<span class="word" onclick="handleWord(this)">Kipu<span class="tooltip-box">ağrı</span></span>',
+              trSentence: 'Ağrı',
+              reason: 'Neden Yanlış: Kemik erimesi tek başına ağrıya neden olmaz. Doğrusu: Ağrı ancak kemikte kırık veya omurga çökmesi (murtuma) geliştikten sonra ortaya çıkar.'
+            },
+            {
+              letter: 'C',
+              isCorrect: false,
+              textHtml: '<span class="word" onclick="handleWord(this)">Lihasten<span class="tooltip-box">kasların</span></span> <span class="word" onclick="handleWord(this)">surkastuminen<span class="tooltip-box">erimesi</span></span>',
+              trSentence: 'Kas erimesi',
+              reason: 'Neden Yanlış: Kas kütlesi ve gücünün azalması osteoporozun değil sarkopeninin (sarkopenia) tanımıdır. Doğrusu: Osteoporozun belirtisi kemik kırığıdır.'
+            },
+            {
+              letter: 'D',
+              isCorrect: false,
+              textHtml: '<span class="word" onclick="handleWord(this)">Ihomuutokset<span class="tooltip-box">cilt değişiklikleri</span></span>',
+              trSentence: 'Cilt değişiklikleri',
+              reason: 'Neden Yanlış: Ciltte incelme veya değişimler yaşlanmaya bağlı dermatolojik bulgudur, osteoporoz belirtisi değildir. Doğrusu: İlk belirti kemik kırığıdır (luunmurtuma).'
+            }
+          ]
+        },
+        {
+          id: 103,
+          section: 'TEMA 1 — GERIATRIA (POTILASTAPAUS / VAKA SENARYOSU)',
+          isMulti: false,
+          correctAnswer: 'B',
+          textHtml: '<span class="word" onclick="handleWord(this)">Potilastapaus:<span class="tooltip-box">Vaka senaryosu:</span></span> <span class="word" onclick="handleWord(this)">76-vuotias<span class="tooltip-box">76 yaşında</span></span> <span class="word" onclick="handleWord(this)">rouva<span class="tooltip-box">kadın hasta</span></span> <span class="word" onclick="handleWord(this)">kaatuu<span class="tooltip-box">düşer</span></span> <span class="word" onclick="handleWord(this)">kotona<span class="tooltip-box">evde</span></span> <span class="word" onclick="handleWord(this)">ja<span class="tooltip-box">ve</span></span> <span class="word" onclick="handleWord(this)">saa<span class="tooltip-box">geçirir</span></span> <span class="word" onclick="handleWord(this)">ranteen<span class="tooltip-box">el bileği</span></span> <span class="word" onclick="handleWord(this)">murtuman.<span class="tooltip-box">kırığı.</span></span> <span class="word" onclick="handleWord(this)">Hänet<span class="tooltip-box">Kendisi</span></span> <span class="word" onclick="handleWord(this)">ohjataan<span class="tooltip-box">yönlendirilir</span></span> <span class="word" onclick="handleWord(this)">luuntiheysmittaukseen<span class="tooltip-box">kemik yoğunluğu ölçümüne</span></span> (<span class="word" onclick="handleWord(this)">DXA<span class="tooltip-box">DXA</span></span>). <span class="word" onclick="handleWord(this)">Mikä<span class="tooltip-box">Hangi</span></span> <span class="word" onclick="handleWord(this)">liikuntamuoto<span class="tooltip-box">egzersiz türü</span></span> <span class="word" onclick="handleWord(this)">tukee<span class="tooltip-box">destekler</span></span> <span class="word" onclick="handleWord(this)">parhaiten<span class="tooltip-box">en iyi şekilde</span></span> <span class="word" onclick="handleWord(this)">luumassan<span class="tooltip-box">kemik kütlesinin</span></span> <span class="word" onclick="handleWord(this)">säilyttämistä?<span class="tooltip-box">korunmasını?</span></span>',
+          trSentence: 'Vaka Senaryosu <span class="highlight-term">(Potilastapaus)</span>: 76 yaşında kadın hasta evde düşerek el bileği kırığı geçiriyor ve kemik yoğunluğu ölçümüne <span class="highlight-term">(DXA / luuntiheysmittaus)</span> yönlendiriliyor. Kemik kütlesinin korunmasını <span class="highlight-term">(luumassan säilyttäminen)</span> en iyi hangi egzersiz türü destekler?',
+          clinical: 'Kırık öyküsü olan yaşlı bireyde ikinci kırık riski 2–4 kat artmıştır. Kemik dokusunun mineral yoğunluğunu korumak ve artırmak için yerçekimine karşı ağırlık taşıyan (weight-bearing) ve kas çekişi sağlayan direnç egzersizleri şarttır; su içinde yapılan egzersizler eklemleri ve kalbi desteklese de kemiğe yük bindirmez.',
+          tarppi: 'Kemik egzersizi (luuliikunta) = Yük + Darbe + Direnç! Ağırlıksız su egzersizi kemiği uyarmaz.',
+          summary: 'Osteoporozda Hareket & Korumada Altın İlkeler:\n• Kemik uyaran egzersizler: Merdiven yürüyüşü (porraskävely), spor salonu direnç çalışması, dans, günlük hareket.\n• İkincil korunma: Düşük enerjili kırık (ranne/selkäranka/lonkka) sonrası mutlaka DXA ölçümü ve düşme önleme planı yapılır.',
+          source: 'Osteoporoosi Käypä hoito & Geriatrian Tentti (HAMK Vaka Örneği)',
+          options: [
+            {
+              letter: 'A',
+              isCorrect: false,
+              textHtml: '<span class="word" onclick="handleWord(this)">Kevyt<span class="tooltip-box">hafif</span></span> <span class="word" onclick="handleWord(this)">vesivoimistelu<span class="tooltip-box">su jimnastiği</span></span> <span class="word danger-word" onclick="handleWord(this)">ilman<span class="tooltip-box">olmadan (tuzak)</span></span> <span class="word" onclick="handleWord(this)">vastusta<span class="tooltip-box">direnç</span></span>',
+              trSentence: 'Direnç olmadan yapılan hafif su jimnastiği',
+              reason: 'Yanlış — Su kaldırma kuvveti vücut ağırlığını sıfırladığı için dirençsiz su egzersizi kemik dokusuna yeterli mekanik yük bindirmez. Doğrusu: Eklemler için iyi olsa da kemik kütlesini korumada yerçekimli/dirençli egzersizler kadar etkili değildir.'
+            },
+            {
+              letter: 'B',
+              isCorrect: true,
+              textHtml: '<span class="word" onclick="handleWord(this)">Porraskävely<span class="tooltip-box">merdiven yürüyüşü</span></span> <span class="word" onclick="handleWord(this)">ja<span class="tooltip-box">ve</span></span> <span class="word" onclick="handleWord(this)">kuntosaliharjoittelu<span class="tooltip-box">spor salonu direnç antrenmanı</span></span>',
+              trSentence: 'Merdiven yürüyüşü ve spor salonu direnç antrenmanı',
+              reason: 'Doğru — Merdiven çıkma vücut ağırlığını yerçekimine karşı taşırken, kuntosali direnç egzersizi kasların kemiklere uyguladığı çekme kuvvetiyle kemik yapımını (osteoblast aktivitesini) doğrudan uyarır.'
+            },
+            {
+              letter: 'C',
+              isCorrect: false,
+              textHtml: '<span class="word" onclick="handleWord(this)">Pelkkä<span class="tooltip-box">sadece (tuzak)</span></span> <span class="word" onclick="handleWord(this)">vuodelepo<span class="tooltip-box">yatak istirahati</span></span> <span class="word" onclick="handleWord(this)">uuden<span class="tooltip-box">yeni</span></span> <span class="word" onclick="handleWord(this)">murtuman<span class="tooltip-box">kırığın</span></span> <span class="word" onclick="handleWord(this)">välttämiseksi<span class="tooltip-box">önlenmesi için</span></span>',
+              trSentence: 'Yeni kırığı önlemek için sadece yatak istirahati',
+              reason: 'Yanlış — Hareketsizlik (immobilizasyon) kemik yıkımını hızlandırır, kas erimesine (sarkopeni) ve düşme riskinin daha da artmasına yol açar. Doğrusu: Kontrollü ve güvenli yük bindiren egzersiz uygulanmalıdır.'
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'tema2',
+      title: 'Tema 2: Ikääntyneiden Lääkehoito (İlaç Tedavisi)',
+      desc: 'İlaç izlemi (TKOK) ve ilaç uygulama yolları (enteral / parenteral)',
+      sections: [
+        {
+          id: 't2_s1',
+          fiTitle: 'Lääkehoidon seurannan TKOK-muistisääntö',
+          trTitle: 'İlaç tedavisi takibinde TKOK hatırlama kuralı',
+          bullets: [
+            '<strong>T — <span class="highlight-term">Teho</span> (Etki):</strong> İlaç beklenen tedavi edici etkiyi gösteriyor mu?',
+            '<strong>K — <span class="highlight-term">Käyttö</span> (Kullanım):</strong> Hasta ilacı doğru dozda, saatte ve doğru teknikle alıyor mu?',
+            '<strong>O — <span class="highlight-term">Ongelmat</span> (Sorunlar):</strong> Yan etki, ilaç etkileşimi veya düşme/baş dönmesi gibi problem var mı?',
+            '<strong>K — <span class="highlight-term">Kontrollit</span> (Kontroller):</strong> Gerekli laboratuvar veya tansiyon/nabız takipleri yapılıyor mu?'
+          ],
+          ansa: 'İlaç takibindeki TKOK ile genel klinik durum değerlendirmesindeki TKOK (Tajunta-Kipu-Orientaatio-Käytös) karıştırılmamalıdır!',
+          tarppi: 'İlaç TKOK: Teho – Käyttö – ONGELMAT – Kontrollit.',
+          source: 'Tentti_Kysymykset_ja_Vastaukset.md (Lääkehoidon tentti)'
+        }
+      ],
+      questions: [
+        {
+          id: 201,
+          section: 'TEMA 2 — LÄÄKEHOITO (TEK SEÇİM)',
+          isMulti: false,
+          correctAnswer: 'A',
+          textHtml: '<span class="word" onclick="handleWord(this)">TKOK-muistisäännössä<span class="tooltip-box">TKOK hatırlama kuralında</span></span> <span class="word" onclick="handleWord(this)">O-kirjain<span class="tooltip-box">O harfi</span></span> <span class="word" onclick="handleWord(this)">tarkoittaa<span class="tooltip-box">anlamına gelir</span></span>:',
+          trSentence: 'İlaç izlemi <span class="highlight-term">TKOK</span> hatırlama kuralında O harfi <span class="highlight-term">Ongelmat</span> (Sorunlar) anlamına gelir.',
+          clinical: 'Yaşlılarda polifarmasi nedeniyle ilaç izlemi düzenli yapılmalıdır. TKOK modeli ilacın etkisini (Teho), doğru kullanımını (Käyttö), yan etki/sorunları (Ongelmat) ve kontrolleri (Kontrollit) sorgular.',
+          tarppi: 'İlaç TKOK içinde O = ONGELMAT (Sorunlar / Yan etkiler).',
+          summary: 'İlaç Tedavisinde TKOK İzlem Çerçevesi:\n• T — Teho (Etki): İlaç amaçlanan iyileşmeyi veya semptom kontrolünü sağlıyor mu?\n• K — Käyttö (Kullanım): Hasta ilacı doğru doz, saat ve teknikle düzenli kullanıyor mu?\n• O — Ongelmat (Sorunlar): Baş dönmesi, düşme, mide kanaması veya etkileşim var mı?\n• K — Kontrollit (Kontroller): Böbrek/karaciğer, INR veya kan basıncı takibi güncel mi?',
+          source: 'Tentti_Kysymykset_ja_Vastaukset.md (Kysymys 2)',
+          options: [
+            {
+              letter: 'A',
+              isCorrect: true,
+              textHtml: '<span class="word" onclick="handleWord(this)">Ongelmat<span class="tooltip-box">sorunlar</span></span>',
+              trSentence: 'Sorunlar',
+              reason: 'Neden Doğru: İlaç tedavisi izlemindeki TKOK açılımında O harfi, ilaçla ilgili sorunları/yan etkileri (Ongelmat) ifade eder.'
+            },
+            {
+              letter: 'B',
+              isCorrect: false,
+              textHtml: '<span class="word" onclick="handleWord(this)">Oireet<span class="tooltip-box">belirtiler</span></span>',
+              trSentence: 'Belirtiler',
+              reason: 'Neden Yanlış: Oireet (belirtiler) hastalık muayenesinde sorulur, ilaç TKOK kısaltmasının harfi değildir. Doğrusu: O = Ongelmat (Sorunlar).'
+            },
+            {
+              letter: 'C',
+              isCorrect: false,
+              textHtml: '<span class="word" onclick="handleWord(this)">Ominaisuus<span class="tooltip-box">özellik</span></span>',
+              trSentence: 'Özellik',
+              reason: 'Neden Yanlış: İlacın kimyasal özelliğini ifade eden uydurma bir çeldiricidir. Doğrusu: O = Ongelmat (Sorunlar / yan etkiler).'
+            },
+            {
+              letter: 'D',
+              isCorrect: false,
+              textHtml: '<span class="word" onclick="handleWord(this)">Oma arvio<span class="tooltip-box">kendi değerlendirmesi</span></span>',
+              trSentence: 'Kendi değerlendirmesi (hastanın)',
+              reason: 'Neden Yanlış: Hastanın öz değerlendirmesi bakım görüşmesinin parçası olsa da TKOK kısaltmasındaki O harfi değildir. Doğrusu: Teho–Käyttö–Ongelmat–Kontrollit modelinde O = Ongelmat.'
+            }
+          ]
+        }
+      ]
+    }
+  ];
+
+  let appState = {
+    activeThemeId: 'tema1',
+    activeMode: 'summary',
+    readSections: {},
+    savedQuestionIdx: {},
+    answers: {},
+    wrongPool: [],
+    starPool: [],
+    poolMode: 'all',
+    timerDuration: 20,
+    totalSeconds: 0
+  };
+
+  let timeLeft = 20;
+  let timerInt = null;
+  let totalInt = null;
+  let currentSelected = new Set();
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STATE_KEY);
+      if (raw) Object.assign(appState, JSON.parse(raw));
+    } catch (e) {}
+  }
+
+  function saveState() {
+    try { localStorage.setItem(STATE_KEY, JSON.stringify(appState)); } catch (e) {}
+  }
+
+  function getActiveTheme() {
+    return THEMES.find(t => t.id === appState.activeThemeId) || THEMES[0];
+  }
+
+  function toggleThemeDropdown() {
+    document.getElementById('theme-dd-panel').classList.toggle('open');
+  }
+
+  function renderThemeDropdown() {
+    const panel = document.getElementById('theme-dd-panel');
+    const active = getActiveTheme();
+    panel.innerHTML = THEMES.map(t => {
+      const readCnt = t.sections.filter(s => appState.readSections[s.id]).length;
+      const readPct = Math.round((readCnt / t.sections.length) * 100);
+      const qIdx = (appState.savedQuestionIdx[t.id] || 0) + 1;
+      const isAct = t.id === active.id;
+      return `
+        <button type="button" class="theme-option-btn ${isAct ? 'active' : ''}" onclick="selectTheme('${t.id}')">
+          <div>
+            <div class="theme-opt-title">${t.title}</div>
+            <div class="theme-opt-sub">${t.desc}</div>
+          </div>
+          <div class="theme-opt-badges">
+            <span class="pill-read">&#x1F4D6; Özet %${readPct}</span>
+            <span class="pill-quiz">&#x1F4DD; Soru ${Math.min(qIdx, t.questions.length)}/${t.questions.length}</span>
+          </div>
+        </button>
+      `;
+    }).join('');
+
+    const actRead = active.sections.filter(s => appState.readSections[s.id]).length;
+    const actPct = Math.round((actRead / active.sections.length) * 100);
+    const actIdx = (appState.savedQuestionIdx[active.id] || 0) + 1;
+    document.getElementById('active-theme-label').textContent = '📂 ' + active.title;
+    document.getElementById('active-theme-badge').textContent = `Özet %${actPct} • Soru ${Math.min(actIdx, active.questions.length)}/${active.questions.length}`;
+  }
+
+  function selectTheme(id) {
+    appState.activeThemeId = id;
+    appState.poolMode = 'all';
+    saveState();
+    document.getElementById('theme-dd-panel').classList.remove('open');
+    renderAll();
+  }
+
+  function switchThemeMode(mode) {
+    appState.activeMode = mode;
+    saveState();
+    renderAll();
+  }
+
+  function updateProgressUI() {
+    const t = getActiveTheme();
+    const readCnt = t.sections.filter(s => appState.readSections[s.id]).length;
+    const readPct = Math.round((readCnt / t.sections.length) * 100);
+    document.getElementById('prog-read-text').textContent = `%${readPct} (${readCnt}/${t.sections.length} bölüm)`;
+    document.getElementById('prog-read-bar').style.width = readPct + '%';
+
+    const totalQ = t.questions.length;
+    const solvedCnt = t.questions.filter(q => appState.answers[q.id] !== undefined).length;
+    const curIdx = Math.min(appState.savedQuestionIdx[t.id] || 0, Math.max(0, totalQ - 1));
+    document.getElementById('prog-quiz-pos').textContent = `📝 Kalınan Yer: Soru ${curIdx + 1} / ${totalQ}`;
+    document.getElementById('prog-quiz-pct').textContent = `${solvedCnt}/${totalQ} çözüldü`;
+    document.getElementById('prog-quiz-bar').style.width = (totalQ ? Math.round((solvedCnt / totalQ) * 100) : 0) + '%';
+  }
+
+  function renderSummary() {
+    const t = getActiveTheme();
+    const container = document.getElementById('summary-panel');
+    let html = t.sections.map((s, idx) => {
+      const isRead = !!appState.readSections[s.id];
+      const tableHtml = s.table ? `
+        <table class="sum-table">
+          <thead><tr>${s.table.headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+          <tbody>${s.table.rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>
+        </table>` : '';
+      return `
+        <div class="summary-section-card ${isRead ? 'read' : ''}">
+          <div class="sum-sec-head">
+            <div>
+              <div class="sum-fi-title">${idx + 1}. ${s.fiTitle}</div>
+              <div class="sum-tr-title">${s.trTitle}</div>
+            </div>
+            <button type="button" class="mark-read-btn ${isRead ? 'done' : ''}" onclick="toggleSectionRead('${s.id}')">
+              ${isRead ? '&#x2713; Okundu' : '&#x2610; Okundu İşaretle'}
+            </button>
+          </div>
+          <ul class="sum-list">${s.bullets.map(b => `<li>${b}</li>`).join('')}</ul>
+          ${tableHtml}
+          <div class="callout-box callout-ansa"><strong>&#x26A0;&#xFE0F; Sınav Tuzağı (Ansa):</strong> ${s.ansa}</div>
+          <div class="callout-box callout-tarppi"><strong>&#x1F3AF; Altın Kural (Tärppi):</strong> ${s.tarppi}</div>
+          <div class="sum-source">&#x1F4DA; <strong>Kaynak:</strong> ${s.source}</div>
+        </div>
+      `;
+    }).join('');
+    html += `<button type="button" class="go-quiz-cta" onclick="switchThemeMode('quiz')">&#x1F4DD; ${t.title} Sorularına Geç &rarr;</button>`;
+    container.innerHTML = html;
+  }
+
+  function toggleSectionRead(secId) {
+    appState.readSections[secId] = !appState.readSections[secId];
+    saveState();
+    renderThemeDropdown();
+    updateProgressUI();
+    renderSummary();
+  }
+
+  function getFilteredQuestions() {
+    const t = getActiveTheme();
+    if (appState.poolMode === 'wrong') return t.questions.filter(q => appState.wrongPool.includes(q.id));
+    if (appState.poolMode === 'star') return t.questions.filter(q => appState.starPool.includes(q.id));
+    return t.questions;
+  }
+
+  function setPoolMode(mode) {
+    appState.poolMode = mode;
+    saveState();
+    renderQuiz();
+  }
+
+  function renderQuiz() {
+    const t = getActiveTheme();
+    const list = getFilteredQuestions();
+    const wrongCnt = t.questions.filter(q => appState.wrongPool.includes(q.id)).length;
+    const starCnt = t.questions.filter(q => appState.starPool.includes(q.id)).length;
+    document.getElementById('pool-all-cnt').textContent = t.questions.length;
+    document.getElementById('pool-wrong-cnt').textContent = wrongCnt;
+    document.getElementById('pool-star-cnt').textContent = starCnt;
+    ['all', 'wrong', 'star'].forEach(m => {
+      document.getElementById('pool-' + m).classList.toggle('active', appState.poolMode === m);
+    });
+
+    let corrCnt = 0, wrCnt = 0;
+    t.questions.forEach(q => {
+      const ans = appState.answers[q.id];
+      if (ans) { if (ans.isCorrect) corrCnt++; else wrCnt++; }
+    });
+    document.getElementById('count-correct').textContent = corrCnt;
+    document.getElementById('count-wrong').textContent = wrCnt;
+    document.getElementById('count-stars').textContent = starCnt;
+
+    if (list.length === 0) {
+      document.getElementById('badge-title').textContent = '📄 0 / 0';
+      document.getElementById('q-text').innerHTML = 'Bu havuzda henüz soru yok. "Tüm Sorular" sekmesine dönebilirsiniz.';
+      document.getElementById('options-list').innerHTML = '';
+      document.getElementById('multi-notice').style.display = 'none';
+      document.getElementById('analysis-card').classList.remove('show');
+      return;
+    }
+
+    let idx = appState.savedQuestionIdx[t.id] || 0;
+    if (idx >= list.length) idx = 0;
+    appState.savedQuestionIdx[t.id] = idx;
+    const q = list[idx];
+
+    document.getElementById('badge-title').textContent = `📄 KYSYMYS ${idx + 1} / ${list.length}`;
+    document.getElementById('section-title').textContent = q.section;
+    const starBtn = document.getElementById('star-btn');
+    const isStarred = appState.starPool.includes(q.id);
+    starBtn.classList.toggle('starred', isStarred);
+    starBtn.innerHTML = isStarred ? '&#x2B50; Yıldızlı' : '&#x2B50; Yıldızla';
+
+    const mn = document.getElementById('multi-notice');
+    if (q.isMulti) {
+      const cnt = q.correctAnswer.split(',').length;
+      mn.style.display = 'block';
+      mn.innerHTML = `&#x1F4CC; Bu soru <strong>ÇOKLU SEÇİM</strong> sorusudur (${cnt} doğru seçenek vardır). Doğru şıkları işaretleyip kontrol ediniz.`;
+    } else {
+      mn.style.display = 'none';
+    }
+
+    document.getElementById('q-text').innerHTML = q.textHtml;
+
+    const prevAns = appState.answers[q.id];
+    currentSelected = new Set(prevAns ? prevAns.selected : []);
+
+    document.getElementById('options-list').innerHTML = q.options.map(opt => {
+      let cls = 'opt-row';
+      if (prevAns) {
+        if (opt.isCorrect) cls += ' correct';
+        else if (currentSelected.has(opt.letter)) cls += ' wrong';
+      } else if (currentSelected.has(opt.letter)) {
+        cls += ' selected';
+      }
+      return `
+        <div class="${cls}" id="opt-row-${opt.letter}" onclick="toggleOption('${opt.letter}', event)">
+          <span class="opt-letter" data-tr="[CÜMLENİN TÜRKÇESİ]: ${opt.trSentence}">${opt.letter})</span>
+          <span class="opt-text">${opt.textHtml}</span>
+        </div>
+      `;
+    }).join('');
+
+    if (prevAns) {
+      renderAnalysisCard(q, prevAns.isCorrect ? 'correct' : 'wrong');
+    } else {
+      document.getElementById('analysis-card').classList.remove('show');
+    }
+
+    resetQuestionTimer();
+  }
+
+  function cleanWordTags(html) {
+    return html.replace(/<span class="tooltip-box">[\s\S]*?<\/span>/g, '').replace(/<[^>]*>/g, '').trim();
+  }
+
+  function toggleOption(letter, evt) {
+    if (evt && evt.target && evt.target.classList.contains('word')) return;
+    const list = getFilteredQuestions();
+    const t = getActiveTheme();
+    const q = list[appState.savedQuestionIdx[t.id] || 0];
+    if (!q || appState.answers[q.id]) return;
+
+    if (q.isMulti) {
+      if (currentSelected.has(letter)) currentSelected.delete(letter);
+      else currentSelected.add(letter);
+    } else {
+      currentSelected = new Set([letter]);
+    }
+    q.options.forEach(o => {
+      const el = document.getElementById('opt-row-' + o.letter);
+      if (el) el.classList.toggle('selected', currentSelected.has(o.letter));
+    });
+  }
+
+  function submitAnswer() {
+    const list = getFilteredQuestions();
+    const t = getActiveTheme();
+    const q = list[appState.savedQuestionIdx[t.id] || 0];
+    if (!q) return;
+    if (currentSelected.size === 0) {
+      alert('Lütfen önce en az bir şık işaretleyin.');
+      return;
+    }
+    const corrSet = new Set(q.correctAnswer.split(','));
+    const isCorr = currentSelected.size === corrSet.size && [...corrSet].every(l => currentSelected.has(l));
+    appState.answers[q.id] = { selected: [...currentSelected], isCorrect: isCorr };
+    if (!isCorr && !appState.wrongPool.includes(q.id)) appState.wrongPool.push(q.id);
+    if (isCorr) appState.wrongPool = appState.wrongPool.filter(id => id !== q.id);
+    saveState();
+    clearInterval(timerInt);
+    updateProgressUI();
+    renderThemeDropdown();
+    renderQuiz();
+  }
+
+  function revealAnalysisPreview() {
+    const list = getFilteredQuestions();
+    const t = getActiveTheme();
+    const q = list[appState.savedQuestionIdx[t.id] || 0];
+    if (!q) return;
+    renderAnalysisCard(q, 'preview');
+  }
+
+  function renderAnalysisCard(q, statusMode) {
+    const card = document.getElementById('analysis-card');
+    let statusHtml = '<div class="analiz-status preview">&#x1F441;&#xFE0F; YENİ KILAVUZ TAM ANALİZ ÖNİZLEMESİ</div>';
+    if (statusMode === 'correct') statusHtml = '<div class="analiz-status correct">&#x2713; TEBRİKLER, DOĞRU CEVAP!</div>';
+    else if (statusMode === 'wrong') statusHtml = '<div class="analiz-status wrong">&#x2717; MAALESEF YANLIŞ CEVAP!</div>';
+
+    const optsHtml = q.options.map(opt => `
+      <div class="opt-analysis-card ${opt.isCorrect ? 'is-corr' : 'is-wrong'}">
+        <div class="opt-analysis-title">
+          <span class="opt-status-badge ${opt.isCorrect ? 'badge-corr' : 'badge-wrong'}">${opt.isCorrect ? '&#x2713; DOĞRU' : '&#x2717; YANLIŞ'}</span>
+          ${opt.letter} Şıkkı: ${cleanWordTags(opt.textHtml)}
+        </div>
+        <div class="opt-analysis-tr">&#x1F1F9;&#x1F1F7; ${opt.trSentence}</div>
+        <div class="opt-analysis-reason">${opt.reason}</div>
+      </div>
+    `).join('');
+
+    card.innerHTML = `
+      ${statusHtml}
+      <div class="tr-box">
+        <div class="box-label" style="color:#34d399;">&#x1F4D6; Sorunun Birebir Türkçe Çevirisi</div>
+        <div>"${q.trSentence}"</div>
+      </div>
+      <div class="clinical-box">
+        <div class="box-label" style="color:#38bdf8;">&#x1F4A1; Tıbbi &amp; Klinik Açıklama</div>
+        <div>${q.clinical}</div>
+      </div>
+      <div>
+        <div class="box-label" style="color:#f8fafc;">&#x1F50D; Şıkların Tek Tek Detaylı Analizi (Fince + Türkçe + Gerekçe)</div>
+        <div class="options-analysis-list">${optsHtml}</div>
+      </div>
+      <div class="tarppi-box"><strong>&#x1F3AF; Sınav Altın Kuralı (Tärppi):</strong> ${q.tarppi}</div>
+      <div class="summary-box"><strong>&#x1F4D6; Konu Özeti:</strong><br>${q.summary.replace(/\n/g, '<br>')}</div>
+      <div class="source-box">&#x1F4DA; <strong>Resmi Kaynak:</strong> ${q.source}</div>
+    `;
+    card.classList.add('show');
+  }
+
+  function repeatQuestion() {
+    const list = getFilteredQuestions();
+    const t = getActiveTheme();
+    const q = list[appState.savedQuestionIdx[t.id] || 0];
+    if (!q) return;
+    delete appState.answers[q.id];
+    currentSelected = new Set();
+    saveState();
+    updateProgressUI();
+    renderQuiz();
+  }
+
+  function prevQuestion() {
+    const list = getFilteredQuestions();
+    if (!list.length) return;
+    const t = getActiveTheme();
+    let idx = appState.savedQuestionIdx[t.id] || 0;
+    appState.savedQuestionIdx[t.id] = (idx - 1 + list.length) % list.length;
+    saveState();
+    updateProgressUI();
+    renderThemeDropdown();
+    renderQuiz();
+  }
+
+  function nextQuestion() {
+    const list = getFilteredQuestions();
+    if (!list.length) return;
+    const t = getActiveTheme();
+    let idx = appState.savedQuestionIdx[t.id] || 0;
+    appState.savedQuestionIdx[t.id] = (idx + 1) % list.length;
+    saveState();
+    updateProgressUI();
+    renderThemeDropdown();
+    renderQuiz();
+  }
+
+  function toggleStar() {
+    const list = getFilteredQuestions();
+    const t = getActiveTheme();
+    const q = list[appState.savedQuestionIdx[t.id] || 0];
+    if (!q) return;
+    if (appState.starPool.includes(q.id)) appState.starPool = appState.starPool.filter(id => id !== q.id);
+    else appState.starPool.push(q.id);
+    saveState();
+    renderQuiz();
+  }
+
+  let activeWordTimer = null;
+  function handleWord(el) {
+    document.querySelectorAll('.word.active-touch').forEach(w => { if (w !== el) w.classList.remove('active-touch'); });
+    el.classList.toggle('active-touch');
+    if (activeWordTimer) clearTimeout(activeWordTimer);
+    if (el.classList.contains('active-touch')) {
+      activeWordTimer = setTimeout(() => el.classList.remove('active-touch'), 3500);
+    }
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.classList.contains('word')) {
+      document.querySelectorAll('.word.active-touch').forEach(w => w.classList.remove('active-touch'));
+    }
+    const ddWrap = document.querySelector('.theme-dropdown-wrap');
+    if (ddWrap && !ddWrap.contains(e.target)) {
+      document.getElementById('theme-dd-panel').classList.remove('open');
+    }
+  });
+
+  function formatMMSS(sec) {
+    const m = Math.floor(sec / 60).toString().padStart(2, '0');
+    const s = (sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  function changeTimerDuration(val) {
+    appState.timerDuration = Number(val);
+    saveState();
+    resetQuestionTimer();
+  }
+
+  function resetQuestionTimer() {
+    clearInterval(timerInt);
+    const box = document.getElementById('timer-display');
+    const qCard = document.getElementById('question-card');
+    box.classList.remove('alarm');
+    qCard.classList.remove('alarm-frame');
+    timeLeft = appState.timerDuration;
+    if (!timeLeft) {
+      document.getElementById('time-left').textContent = '∞';
+      return;
+    }
+    document.getElementById('time-left').textContent = formatMMSS(timeLeft);
+    if (appState.activeMode !== 'quiz') return;
+    timerInt = setInterval(() => {
+      if (timeLeft > 0) {
+        timeLeft--;
+        document.getElementById('time-left').textContent = formatMMSS(timeLeft);
+      }
+      if (timeLeft === 0) {
+        box.classList.add('alarm');
+        qCard.classList.add('alarm-frame');
+        clearInterval(timerInt);
+      }
+    }, 1000);
+  }
+
+  function toggleFullScreen() {
+    const doc = window.document;
+    const docEl = doc.documentElement;
+    if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
+      (docEl.requestFullscreen || docEl.webkitRequestFullscreen).call(docEl).catch(() => {});
+    } else {
+      (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc).catch(() => {});
+    }
+  }
+
+  function renderAll() {
+    renderThemeDropdown();
+    updateProgressUI();
+    document.getElementById('mode-tab-summary').classList.toggle('active', appState.activeMode === 'summary');
+    document.getElementById('mode-tab-quiz').classList.toggle('active', appState.activeMode === 'quiz');
+    document.getElementById('summary-panel').classList.toggle('active', appState.activeMode === 'summary');
+    document.getElementById('quiz-panel').classList.toggle('active', appState.activeMode === 'quiz');
+
+    if (appState.activeMode === 'summary') {
+      clearInterval(timerInt);
+      renderSummary();
+    } else {
+      renderQuiz();
+    }
+  }
+
+  loadState();
+  document.getElementById('timer-setting').value = String(appState.timerDuration || 20);
+  renderAll();
+  totalInt = setInterval(() => {
+    if (appState.activeMode === 'quiz') {
+      appState.totalSeconds++;
+      document.getElementById('total-time-left').textContent = formatMMSS(appState.totalSeconds);
+    }
+  }, 1000);
+</script>
+</body>
+</html>

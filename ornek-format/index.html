@@ -833,6 +833,7 @@
       <span class="profile-info">
         &#x1F464; Aktif Profil: <strong style="color:#38bdf8;">hkn</strong>
         <span class="cloud-badge" title="Supabase hamk_ders_ilerleme tablosu senkronizasyon örneği">&#x2601;&#xFE0F; Bulut Senkron (Örnek)</span>
+        <button type="button" id="btn-hide-known" onclick="toggleHideKnown()" style="background:rgba(20,184,166,0.12);border:1px solid rgba(20,184,166,0.4);color:#5eead4;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer;" title="Kielikaivos 'Biliyorum' listenizdeki kelimeleri özetlerde gizle/göster">&#x1F441;&#xFE0F; Bildiklerim: Gizli</button>
       </span>
     </div>
     <a href="../?logout=1" class="portal-logout-btn" title="Oturumu Kapat" style="background:#dc2626;color:#ffffff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 4px rgba(220,38,38,0.35);">&#x1F6AA; Oturumu Kapat</a>
@@ -1034,6 +1035,7 @@
     'iäkkäillä': 'yaşlılarda',
     'monilääkitys': 'polifarmasi (çoklu ilaç)'
   };
+  const KNOWN_HKN = [];
 
   const THEMES = [
     {
@@ -1397,6 +1399,7 @@
     wrongPool: [],
     starPool: [],
     poolMode: 'all',
+    hideKnown: (typeof PORTAL_USER !== 'undefined' && PORTAL_USER === 'shyl') ? false : true,
     timerDuration: 20,
     totalSeconds: 0
   };
@@ -1611,8 +1614,167 @@
     }
   }
 
+  let _knownSetCache = null;
+  function getKnownSet() {
+    if (!_knownSetCache) {
+      _knownSetCache = new Set(Array.isArray(KNOWN_HKN) ? KNOWN_HKN : []);
+    }
+    return _knownSetCache;
+  }
+
+  function isHideKnownEnabled() {
+    if (!Array.isArray(KNOWN_HKN) || KNOWN_HKN.length === 0) return false;
+    if (typeof PORTAL_USER !== 'undefined' && PORTAL_USER === 'shyl') return appState.hideKnown === true;
+    return appState.hideKnown !== false;
+  }
+
+  function updateHideKnownButton() {
+    const btn = document.getElementById('btn-hide-known');
+    if (!btn) return;
+    const cnt = Array.isArray(KNOWN_HKN) ? KNOWN_HKN.length : 0;
+    if (!cnt) { btn.style.display = 'none'; return; }
+    btn.style.display = '';
+    const hidden = isHideKnownEnabled();
+    btn.textContent = hidden ? `\uD83D\uDC41\uFE0F Bildiklerim: Gizli (${cnt})` : `\uD83D\uDC41\uFE0F Bildiklerim: A\u00e7\u0131k (${cnt})`;
+    btn.style.borderColor = hidden ? 'rgba(20,184,166,0.45)' : 'rgba(148,163,184,0.4)';
+    btn.style.color = hidden ? '#5eead4' : '#cbd5e1';
+  }
+
+  function toggleHideKnown() {
+    appState.hideKnown = !isHideKnownEnabled();
+    saveState();
+    updateHideKnownButton();
+    if (appState.activeMode === 'summary') renderSummary();
+  }
+
+  const FI_IRREG = {
+    'on':'olla','ovat':'olla','ole':'olla','eivät':'ei','oli':'olla','olisi':'olla','ollut':'olla','olleet':'olla',
+    'mitä':'mikä','mitkä':'mikä','minkä':'mikä','mihin':'mikä',
+    'sen':'se','sitä':'se','siitä':'se','siinä':'se','sille':'se','ne':'se','niiden':'se','niitä':'se','niissä':'se',
+    'hänen':'hän','häntä':'hän','hänelle':'hän','hänellä':'hän','heidän':'he','heitä':'he',
+    'tämän':'tämä','tätä':'tämä','tässä':'tämä','nämä':'tämä','näiden':'tämä','näistä':'tämä',
+    'jonka':'joka','jota':'joka','jotka':'joka','joiden':'joka','joissa':'joka','joita':'joka',
+    'yhden':'yksi','yhtä':'yksi','kahden':'kaksi','kolmen':'kolme',
+    'uuden':'uusi','uutta':'uusi','uudet':'uusi','uusia':'uusi',
+    'hyvän':'hyvä','parempi':'hyvä','paras':'hyvä','parhaiten':'hyvin',
+    'enemmän':'paljon','eniten':'paljon','vähemmän':'vähän',
+    'muut':'muu','muita':'muu','muun':'muu','muuhun':'muu',
+    'saman':'sama','samaa':'sama','samalla':'sama','useimmat':'usea',
+    'vuoden':'vuosi','vuotta':'vuosi','vuoteen':'vuosi','vuodet':'vuosi','vuosia':'vuosi',
+    'käden':'käsi','kättä':'käsi','veden':'vesi','vettä':'vesi',
+    'suun':'suu','luun':'luu','pään':'pää','iän':'ikä','ikää':'ikä','iässä':'ikä','iästä':'ikä',
+    'asioita':'asia','asioiden':'asia','tarkistetaan':'tarkistaa','lopetetaan':'lopettaa','aloitetaan':'aloittaa',
+    'otetaan':'ottaa','voidaan':'voida','tarvitaan':'tarvita','selvitetään':'selvittää','muutetaan':'muuttaa',
+    'tulee':'tulla','tulevat':'tulla','kuuluu':'kuulua','kuuluvat':'kuulua','pysyy':'pysyä','pysyvät':'pysyä',
+    'pienenee':'pienentyä','aiheuttavat':'aiheuttaa','pitävät':'pitää','lisäämällä':'lisätä'
+  };
+  const FI_SUFFIXES = [
+    'hansa','hänsä','kseen','kseni','ksesi','ssaan','ssään','stansa','stänsä','llaan','llään','lleen',
+    'iden','itten','seen','siin','hin','hun','hyn','hon','hön','den','tten','jen','ien','ten','ihin','isiin',
+    'taan','tään','daan','dään','laan','lään','naan','nään','raan','rään','malla','mällä',
+    'ssa','ssä','sta','stä','lla','llä','lta','ltä','lle','tta','ttä','ksi','na','nä',
+    'aan','ään','een','iin','oon','öön','uun','yyn','vat','vät','nut','nyt','neet','tu','ty','ttu','tty',
+    'isi','mme','tte','nsä','nsa','ni','si','ta','tä','ja','jä','va','vä','aa','ää','oo','öö','uu','yy','ii','ee',
+    'n','t','a','ä','i','e','s','k'
+  ];
+
+  function fiKptVariants(b) {
+    const out = [b];
+    const rules = [
+      [/([^k])k([aeiouyäö]*)$/, '$1kk$2'], [/kk([aeiouyäö]*)$/, 'k$1'],
+      [/([^p])p([aeiouyäö]*)$/, '$1pp$2'], [/pp([aeiouyäö]*)$/, 'p$1'],
+      [/([^t])t([aeiouyäö]*)$/, '$1tt$2'], [/tt([aeiouyäö]*)$/, 't$1'],
+      [/nn([aeiouyäö]*)$/, 'nt$1'], [/ng([aeiouyäö]*)$/, 'nk$1'], [/mm([aeiouyäö]*)$/, 'mp$1'],
+      [/ll([aeiouyäö]*)$/, 'lt$1'], [/rr([aeiouyäö]*)$/, 'rt$1'], [/d([aeiouyäö]*)$/, 't$1'],
+      [/v([aeiouyäö]*)$/, 'p$1'], [/vy([aeiouyäö]*)$/, 'ky$1'], [/vu([aeiouyäö]*)$/, 'ku$1']
+    ];
+    for (let i = 0; i < rules.length; i++) {
+      if (rules[i][0].test(b)) {
+        const rep = b.replace(rules[i][0], rules[i][1]);
+        if (out.indexOf(rep) === -1) out.push(rep);
+      }
+    }
+    return out;
+  }
+
+  function findDictLemma(word) {
+    const k = word.toLowerCase();
+    if (FI_IRREG[k] && WORD_DICT[FI_IRREG[k]]) return FI_IRREG[k];
+    if (WORD_DICT[k]) return k;
+
+    const tryBase = (raw) => {
+      const vars = fiKptVariants(raw);
+      for (let vi = 0; vi < vars.length; vi++) {
+        const v = vars[vi];
+        if (WORD_DICT[v]) return v;
+        const ends = ['a','ä','e','i','o','u','y','da','dä','ta','tä','na','nä','la','lä','ra','rä','us','ys','as','äs','is','es','nen'];
+        for (let ei = 0; ei < ends.length; ei++) {
+          if (WORD_DICT[v + ends[ei]]) return v + ends[ei];
+        }
+        if (v.endsWith('s') && WORD_DICT[v.slice(0, -1) + 'nen']) return v.slice(0, -1) + 'nen';
+        if (v.endsWith('kke') && WORD_DICT[v.slice(0, -3) + 'ke']) return v.slice(0, -3) + 'ke';
+        if (v.endsWith('kkee') && WORD_DICT[v.slice(0, -4) + 'ke']) return v.slice(0, -4) + 'ke';
+        if (v.endsWith('ppe') && WORD_DICT[v.slice(0, -3) + 'pe']) return v.slice(0, -3) + 'pe';
+        if (v.endsWith('tte') && WORD_DICT[v.slice(0, -3) + 'te']) return v.slice(0, -3) + 'te';
+        if (v.endsWith('ttee') && WORD_DICT[v.slice(0, -4) + 'te']) return v.slice(0, -4) + 'te';
+        if (v.endsWith('aa') && WORD_DICT[v.slice(0, -2) + 'as']) return v.slice(0, -2) + 'as';
+        if (v.endsWith('ää') && WORD_DICT[v.slice(0, -2) + 'äs']) return v.slice(0, -2) + 'äs';
+        if (v.endsWith('ee') && WORD_DICT[v.slice(0, -1)]) return v.slice(0, -1);
+        if (v.endsWith('ee') && WORD_DICT[v.slice(0, -2) + 's']) return v.slice(0, -2) + 's';
+        if ((v.endsWith('se') || v.endsWith('si')) && WORD_DICT[v.slice(0, -2) + 'nen']) return v.slice(0, -2) + 'nen';
+        if (v.endsWith('kse') && WORD_DICT[v.slice(0, -3) + 's']) return v.slice(0, -3) + 's';
+        if ((v.endsWith('ukse') || v.endsWith('uksi')) && WORD_DICT[v.slice(0, -4) + 'us']) return v.slice(0, -4) + 'us';
+        if ((v.endsWith('ykse') || v.endsWith('yksi')) && WORD_DICT[v.slice(0, -4) + 'ys']) return v.slice(0, -4) + 'ys';
+        if (v.endsWith('ude') && WORD_DICT[v.slice(0, -3) + 'us']) return v.slice(0, -3) + 'us';
+        if (v.endsWith('yde') && WORD_DICT[v.slice(0, -3) + 'ys']) return v.slice(0, -3) + 'ys';
+        if (v.endsWith('de') && WORD_DICT[v.slice(0, -2) + 'si']) return v.slice(0, -2) + 'si';
+        if (v.endsWith('te') && WORD_DICT[v.slice(0, -2) + 'si']) return v.slice(0, -2) + 'si';
+        if (/(oi|öi|ei|ui|yi|ai|äi)$/.test(v)) {
+          const s1 = v.slice(0, -1);
+          const pe = ['','a','ä','e','o','ö'];
+          for (const k2 of fiKptVariants(s1)) {
+            for (const e2 of pe) if (WORD_DICT[k2 + e2]) return k2 + e2;
+          }
+        }
+        if (v.endsWith('i') && v.length > 3) {
+          const noI = v.slice(0, -1);
+          for (const k2 of fiKptVariants(noI)) {
+            for (const e2 of ['','a','ä','e','i']) if (WORD_DICT[k2 + e2]) return k2 + e2;
+          }
+        }
+        if (/(aa|ää|ee|ii|oo|öö|uu|yy)$/.test(v)) {
+          const sv = v.slice(0, -1);
+          for (const e2 of ['a','ä','ta','tä','da','dä']) if (WORD_DICT[sv + e2]) return sv + e2;
+        }
+      }
+      return null;
+    };
+
+    const r0 = tryBase(k);
+    if (r0) return r0;
+    for (let si = 0; si < FI_SUFFIXES.length; si++) {
+      const suf = FI_SUFFIXES[si];
+      if (k.length > suf.length + 2 && k.endsWith(suf)) {
+        const b1 = k.slice(0, -suf.length);
+        const r1 = tryBase(b1);
+        if (r1) return r1;
+        const p2 = ['i','t','j','a','ä','e','s','seen','n'];
+        for (let pi = 0; pi < p2.length; pi++) {
+          if (b1.length > p2[pi].length + 2 && b1.endsWith(p2[pi])) {
+            const r2 = tryBase(b1.slice(0, -p2[pi].length));
+            if (r2) return r2;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   function applyFloatingDictTooltips(rootEl) {
     if (!rootEl || typeof WORD_DICT !== 'object') return;
+    updateHideKnownButton();
+    const hideKnown = isHideKnownEnabled();
+    const knownSet = getKnownSet();
     const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, null);
     const nodes = [];
     let n;
@@ -1622,7 +1784,7 @@
       if (!p || p.closest('.word, .fw, .sum-tr-collapse, .sum-tr-title, script, style, button')) continue;
       nodes.push(n);
     }
-    const wordRe = /([A-Za-zÅÄÖåäö-]+(?:[–-][A-Za-zÅÄÖåäö]+)*)/g;
+    const wordRe = /([A-Za-zÅÄÖåäöÇĞİÖŞÜçğıöşü]+(?:[\u2013-][A-Za-zÅÄÖåäöÇĞİÖŞÜçğıöşü]+)*)/g;
     for (const textNode of nodes) {
       const txt = textNode.nodeValue;
       let lastIdx = 0;
@@ -1631,14 +1793,19 @@
       wordRe.lastIndex = 0;
       while ((match = wordRe.exec(txt)) !== null) {
         const raw = match[1];
+        if (raw.length < 2 || /[çğıöşüÇĞİÖŞÜ]/.test(raw)) continue;
         const key = raw.toLowerCase();
-        const tr = WORD_DICT[key];
+        const lemma = findDictLemma(key);
+        if (!lemma) continue;
+        if (hideKnown && (knownSet.has(key) || knownSet.has(lemma))) continue;
+        const tr = WORD_DICT[key] || WORD_DICT[lemma];
         if (!tr) continue;
         if (!frag) frag = document.createDocumentFragment();
         if (match.index > lastIdx) frag.appendChild(document.createTextNode(txt.slice(lastIdx, match.index)));
         const sp = document.createElement('span');
         sp.className = 'fw';
         sp.dataset.tr = tr;
+        if (lemma !== key) sp.dataset.lemma = lemma;
         sp.textContent = raw;
         frag.appendChild(sp);
         lastIdx = wordRe.lastIndex;
@@ -1655,7 +1822,9 @@
     if (!tip || !el || !el.dataset || !el.dataset.tr) return;
     document.querySelectorAll('.fw.active-tip').forEach(x => { if (x !== el) x.classList.remove('active-tip'); });
     el.classList.add('active-tip');
-    tip.textContent = el.dataset.tr;
+    tip.innerHTML = el.dataset.lemma
+      ? `${el.dataset.tr}<div style="font-size:11px;color:#94a3b8;font-weight:500;margin-top:2px;">yal\u0131n: ${el.dataset.lemma}</div>`
+      : el.dataset.tr;
     tip.style.display = 'block';
     const rect = el.getBoundingClientRect();
     const tw = tip.offsetWidth || 160;
@@ -2133,6 +2302,7 @@
   }
 
   function renderAll() {
+    updateHideKnownButton();
     const t = getActiveTheme();
     const hasSummary = Array.isArray(t.sections) && t.sections.length > 0;
     if (!hasSummary && appState.activeMode === 'summary') {

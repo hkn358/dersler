@@ -199,6 +199,120 @@
   .pill-read { color: #34d399; font-weight: 700; }
   .pill-quiz { color: var(--accent); font-weight: 600; }
 
+  /* Alt Test Listesi Paneli (Dropdown'dan secince altta listelenen testler) */
+  .subtests-panel {
+    background: #0b1322;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .subtests-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+    padding: 0 2px;
+  }
+  .subtests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 8px;
+  }
+  .subtest-card {
+    background: #131f33;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    padding: 9px 11px;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: border-color 0.15s, background 0.15s, transform 0.12s;
+  }
+  .subtest-card:hover { border-color: var(--accent); background: #182740; transform: translateY(-1px); }
+  .subtest-card.active {
+    background: rgba(13, 148, 136, 0.2);
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 1px rgba(20, 184, 166, 0.35);
+  }
+  .subtest-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+  }
+  .kind-badge {
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: rgba(15, 23, 42, 0.75);
+    color: #cbd5e1;
+    white-space: nowrap;
+  }
+  .kind-badge.tarama { color: #fbbf24; border-color: rgba(245, 158, 11, 0.45); background: rgba(245, 158, 11, 0.12); }
+  .kind-badge.deneme { color: #c084fc; border-color: rgba(192, 132, 252, 0.45); background: rgba(168, 85, 247, 0.12); }
+  .kind-badge.ekstra { color: #38bdf8; border-color: rgba(56, 189, 248, 0.45); background: rgba(56, 189, 248, 0.12); }
+  .kind-badge.tentti { color: #34d399; border-color: rgba(16, 185, 129, 0.45); background: rgba(16, 185, 129, 0.12); }
+  .subtest-title { font-size: 13px; font-weight: 700; color: #f1f5f9; line-height: 1.3; }
+  .subtest-desc { font-size: 11px; color: var(--text-muted); line-height: 1.35; }
+  .subtest-meta { font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between; gap: 6px; margin-top: 2px; }
+
+  .report-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: rgba(20, 184, 166, 0.08);
+    border: 1px dashed rgba(20, 184, 166, 0.4);
+    border-radius: 10px;
+    padding: 8px 12px;
+  }
+  .report-btn {
+    background: #0d9488;
+    border: 1px solid #14b8a6;
+    color: #fff;
+    border-radius: 8px;
+    padding: 6px 11px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .report-btn:hover { background: #14b8a6; }
+  .report-box {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    background: #0b1322;
+    border: 1px solid var(--primary-light);
+    border-radius: 10px;
+    padding: 10px;
+  }
+  .report-box.open { display: flex; }
+  .report-textarea {
+    width: 100%;
+    min-height: 145px;
+    background: #090d16;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 8px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+
   /* Mode Switcher inside Selected Theme: Summary vs Quiz */
   .theme-mode-tabs {
     display: grid;
@@ -682,31 +796,33 @@
       <button type="button" class="theme-dropdown-btn" id="theme-dd-btn" onclick="toggleThemeDropdown()">
         <span id="active-theme-label">&#x1F4C2; Tema 1: Ikääntyminen &amp; Luusto</span>
         <span class="theme-dd-meta">
-          <span id="active-theme-badge">Özet %0 • Soru 1/2</span>
+          <span id="active-theme-badge">Özet %0 • 2 Test</span>
           <span>&#x25BE;</span>
         </span>
       </button>
       <div class="theme-dropdown-panel" id="theme-dd-panel"></div>
     </div>
 
-    <div class="theme-mode-tabs">
+    <div class="subtests-panel" id="subtests-panel"></div>
+
+    <div class="theme-mode-tabs" id="theme-mode-tabs">
       <button type="button" class="theme-mode-btn active" id="mode-tab-summary" onclick="switchThemeMode('summary')">
         &#x1F4D6; Tema Özeti (Fince + Türkçe)
       </button>
       <button type="button" class="theme-mode-btn" id="mode-tab-quiz" onclick="switchThemeMode('quiz')">
-        &#x1F4DD; Tema Soruları (Test)
+        &#x1F4DD; Seçili Testi Çöz
       </button>
     </div>
 
-    <div class="progress-strip">
-      <div class="prog-item">
+    <div class="progress-strip" id="progress-strip">
+      <div class="prog-item" id="prog-read-wrap">
         <div class="prog-top">
           <span>&#x1F4D6; Özet Okuma İlerlemesi</span>
           <strong id="prog-read-text" style="color:#34d399;">%0 (0/2 bölüm)</strong>
         </div>
         <div class="prog-bar-bg"><div class="prog-bar-fill" id="prog-read-bar"></div></div>
       </div>
-      <div class="prog-item">
+      <div class="prog-item" id="prog-quiz-wrap">
         <div class="prog-top">
           <span id="prog-quiz-pos">&#x1F4DD; Kalınan Yer: Soru 1 / 2</span>
           <strong id="prog-quiz-pct" style="color:#38bdf8;">0 çözüldü</strong>
@@ -745,6 +861,21 @@
       <button type="button" class="mode-btn active" id="pool-all" onclick="setPoolMode('all')">&#x1F4DA; Tüm Sorular (<span id="pool-all-cnt">2</span>)</button>
       <button type="button" class="mode-btn" id="pool-wrong" onclick="setPoolMode('wrong')">&#x274C; Hatalarım (<span id="pool-wrong-cnt">0</span>)</button>
       <button type="button" class="mode-btn" id="pool-star" onclick="setPoolMode('star')">&#x2B50; Yıldızlı (<span id="pool-star-cnt">0</span>)</button>
+    </div>
+
+    <div class="report-toolbar">
+      <span style="font-size:11.5px; color:#cbd5e1;">&#x1F4CA; Tarama/test sonucuyla ihtiyaca göre yeni ekstra soru üretimi için raporu kopyalayabilirsiniz.</span>
+      <button type="button" class="report-btn" onclick="exportTestReport()">&#x1F4CB; Sonuç Raporunu Kopyala</button>
+    </div>
+    <div class="report-box" id="report-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <strong id="report-status" style="font-size:12px; color:#34d399;">&#x2705; Sonuç Raporu Hazır (Sohbete yapıştırabilirsiniz)</strong>
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="report-btn" onclick="copyReportTextarea()">&#x1F4CB; Kopyala</button>
+          <button type="button" class="report-btn" style="background:#334155;border-color:#475569;" onclick="document.getElementById('report-box').classList.remove('open')">&#x2716; Kapat</button>
+        </div>
+      </div>
+      <textarea id="report-textarea" class="report-textarea" readonly></textarea>
     </div>
 
     <div class="question-card" id="question-card">
@@ -823,7 +954,14 @@
           source: 'Osteoporoosi_Kaypa_hoito.md & Geriatrian tenttimateriaali'
         }
       ],
-      questions: [
+      tests: [
+        {
+          id: 't1_temel',
+          kind: 'temel',
+          kindLabel: 'Temel Test',
+          title: 'Tema 1 Temel Bilgiler Testi (2 Soru)',
+          desc: 'Kemik dokusu yenilenmesi ve osteoporoz belirtileri',
+          questions: [
         {
           id: 101,
           section: 'TEMA 1 — GERIATRIA (ÇOKLU SEÇİM)',
@@ -914,7 +1052,16 @@
               reason: 'Neden Yanlış: Ciltte incelme veya değişimler yaşlanmaya bağlı dermatolojik bulgudur, osteoporoz belirtisi değildir. Doğrusu: İlk belirti kemik kırığıdır (luunmurtuma).'
             }
           ]
+        }
+          ]
         },
+        {
+          id: 't1_ekstra',
+          kind: 'ekstra',
+          kindLabel: 'Ekstra Vaka',
+          title: 'Tema 1 Ekstra Vaka Testi (1 Soru)',
+          desc: 'Potilastapaus: DXA sonrası kemik kütlesini koruyan egzersiz seçimi',
+          questions: [
         {
           id: 103,
           section: 'TEMA 1 — GERIATRIA (POTILASTAPAUS / VAKA SENARYOSU)',
@@ -948,6 +1095,8 @@
               trSentence: 'Yeni kırığı önlemek için sadece yatak istirahati',
               reason: 'Yanlış — Hareketsizlik (immobilizasyon) kemik yıkımını hızlandırır, kas erimesine (sarkopeni) ve düşme riskinin daha da artmasına yol açar. Doğrusu: Kontrollü ve güvenli yük bindiren egzersiz uygulanmalıdır.'
             }
+          ]
+        }
           ]
         }
       ]
@@ -1016,11 +1165,89 @@
           ]
         }
       ]
+    },
+    {
+      id: 'diger_testler',
+      title: 'Diğer Testler: Tarama, Deneme & Ekstra Örnekleri',
+      desc: 'Seçildiğinde altta Tarama, Deneme ve Ekstra testlerin nasıl listelendiğini gösteren örnek kategori',
+      sections: [],
+      tests: [
+        {
+          id: 'demo_tarama',
+          kind: 'tarama',
+          kindLabel: 'Tarama Testi',
+          title: 'Tarama Testi Örneği (Tema 1 + Tema 2 Karma — 2 Soru)',
+          desc: 'Zayıf konuları tespit etmek için karma tarama; bitince Sonuç Raporunu Kopyala ile analiz alabilirsiniz.',
+          questions: [
+            {
+              id: 301,
+              section: 'TARAMA — TEEMA 1 (OSTEOPOROZ & LİF)',
+              isMulti: false,
+              correctAnswer: 'C',
+              textHtml: '<span class="word" onclick="handleWord(this)">Mikä<span class="tooltip-box">hangi</span></span> <span class="word" onclick="handleWord(this)">on<span class="tooltip-box">-dir</span></span> <span class="word" onclick="handleWord(this)">osteoporoosin<span class="tooltip-box">osteoporozun</span></span> <span class="word" onclick="handleWord(this)">ensimmäinen<span class="tooltip-box">ilk</span></span> <span class="word" onclick="handleWord(this)">kliininen<span class="tooltip-box">klinik</span></span> <span class="word" onclick="handleWord(this)">oire<span class="tooltip-box">belirtisi</span></span>?',
+              trSentence: 'Osteoporozun ilk klinik belirtisi nedir?',
+              clinical: 'Osteoporoz kemik mineral yoğunluğunu sessizce azaltır ve kırık gelişene kadar ağrı yapmaz.',
+              tarppi: 'İlk belirti ağrı değil düşük enerjili kemik kırığıdır (luunmurtuma).',
+              summary: 'Osteoporoz Tarama Özeti:\n• Sessiz ilerler; ilk klinik bulgu genellikle el bileği, omurga veya kalça kırığıdır.\n• Korunma: DXA taraması, yeterli D vitamini/kalsiyum ve yük bindiren egzersiz.',
+              source: 'Osteoporoosi Käypä hoito',
+              options: [
+                { letter: 'A', isCorrect: false, textHtml: '<span class="word" onclick="handleWord(this)">Voimakas<span class="tooltip-box">şiddetli</span></span> <span class="word" onclick="handleWord(this)">päänsärky<span class="tooltip-box">baş ağrısı</span></span>', trSentence: 'Şiddetli baş ağrısı', reason: 'Neden Yanlış: Baş ağrısı osteoporoz belirtisi değildir. Doğrusu: Kırık gelişene kadar sessizdir.' },
+                { letter: 'B', isCorrect: false, textHtml: '<span class="word" onclick="handleWord(this)">Lihaskipu<span class="tooltip-box">kas ağrısı</span></span> <span class="word" onclick="handleWord(this)">levossa<span class="tooltip-box">istirahatte</span></span>', trSentence: 'İstirahatte kas ağrısı', reason: 'Neden Yanlış: Erken osteoporoz istirahatte ağrı yapmaz. Doğrusu: İlk klinik bulgu kırık oluşmasıdır.' },
+                { letter: 'C', isCorrect: true, textHtml: '<span class="word" onclick="handleWord(this)">Matalaenerginen<span class="tooltip-box">düşük enerjili</span></span> <span class="word" onclick="handleWord(this)">luunmurtuma<span class="tooltip-box">kemik kırığı</span></span>', trSentence: 'Düşük enerjili kemik kırığı', reason: 'Neden Doğru: Düşük enerjili düşmeyle oluşan el bileği, omurga veya kalça kırığı osteoporozun ilk klinik bulgusudur.' }
+              ]
+            },
+            {
+              id: 302,
+              section: 'TARAMA — TEEMA 2 (LÄÄKEHOITO / TKOK)',
+              isMulti: false,
+              correctAnswer: 'B',
+              textHtml: '<span class="word" onclick="handleWord(this)">Mitä<span class="tooltip-box">neyi</span></span> <span class="word" onclick="handleWord(this)">T-kirjain<span class="tooltip-box">T harfi</span></span> <span class="word" onclick="handleWord(this)">tarkoittaa<span class="tooltip-box">ifade eder</span></span> <span class="word" onclick="handleWord(this)">lääkehoidon<span class="tooltip-box">ilaç tedavisinin</span></span> <span class="word" onclick="handleWord(this)">TKOK-seurannassa?<span class="tooltip-box">TKOK takibinde?</span></span>',
+              trSentence: 'İlaç tedavisinin TKOK takibinde T harfi neyi ifade eder?',
+              clinical: 'TKOK = Teho (etki), Käyttö (kullanım), Ongelmat (sorunlar), Kontrollit (kontroller).',
+              tarppi: 'TKOK baş harfi T = Teho (ilacın beklenen tedavi etkisi).',
+              summary: 'TKOK İzlem Kuralı:\n• T = Teho (etki), K = Käyttö (doğru kullanım), O = Ongelmat (yan etki/etkileşim), K = Kontrollit (laboratuvar/vital takip).',
+              source: 'Lääkehoidon tentti & TKOK-malli',
+              options: [
+                { letter: 'A', isCorrect: false, textHtml: '<span class="word" onclick="handleWord(this)">Talousarvio<span class="tooltip-box">bütçe</span></span>', trSentence: 'Bütçe', reason: 'Neden Yanlış: Ekonomik terimdir, klinik TKOK izleminin parçası değildir.' },
+                { letter: 'B', isCorrect: true, textHtml: '<span class="word" onclick="handleWord(this)">Lääkkeen<span class="tooltip-box">ilacın</span></span> <span class="word" onclick="handleWord(this)">teho<span class="tooltip-box">etkisi</span></span>', trSentence: 'İlacın etkisi (Teho)', reason: 'Neden Doğru: T harfi ilacın beklenen klinik faydayı sağlayıp sağlamadığını (Teho) kontrol etmeyi temsil eder.' },
+                { letter: 'C', isCorrect: false, textHtml: '<span class="word" onclick="handleWord(this)">Tapaturmavakuutus<span class="tooltip-box">kaza sigortası</span></span>', trSentence: 'Kaza sigortası', reason: 'Neden Yanlış: Sigorta terimidir; doğrusu T = Teho (ilacın etkisi).' }
+              ]
+            }
+          ]
+        },
+        {
+          id: 'demo_deneme',
+          kind: 'deneme',
+          kindLabel: 'Deneme Testi',
+          title: 'Deneme Sınavı Örneği (Karma Prova — 1 Soru)',
+          desc: 'Gerçek sınav tarzında çoklu seçim deneme sorusu',
+          questions: [
+            {
+              id: 303,
+              section: 'DENEME — KARMA KLİNİK',
+              isMulti: true,
+              correctAnswer: 'A,B',
+              textHtml: '<span class="word" onclick="handleWord(this)">Mitkä<span class="tooltip-box">hangileri</span></span> <span class="word" onclick="handleWord(this)">liikuntamuodot<span class="tooltip-box">egzersiz türleri</span></span> <span class="word" onclick="handleWord(this)">tukevat<span class="tooltip-box">destekler</span></span> <span class="word" onclick="handleWord(this)">luumassaa?<span class="tooltip-box">kemik kütlesini?</span></span>',
+              trSentence: 'Hangi egzersiz türleri kemik kütlesini destekler?',
+              clinical: 'Kemiğe yerçekimi yükü ve kas çekme direnci veren hareketler kemik yapımını uyarır.',
+              tarppi: 'Yük bindiren yürüyüş/merdiven + direnç antrenmanı kemiği güçlendirir; yüzme kemiğe darbe/yük vermez.',
+              summary: 'Kemik Dostu Egzersiz (Luuliikunta):\n• Merdiven yürüyüşü ve ağırlık/direnç çalışması kemik mineral yoğunluğunu korur.\n• Yüzme kardiyovasküler açıdan harikadır ancak su yükü aldığı için luuliikunta yerine geçmez.',
+              source: 'Osteoporoosi Käypä hoito',
+              options: [
+                { letter: 'A', isCorrect: true, textHtml: '<span class="word" onclick="handleWord(this)">Porraskävely<span class="tooltip-box">merdiven yürüyüşü</span></span>', trSentence: 'Merdiven yürüyüşü', reason: 'Neden Doğru: Her adımda yerçekimine karşı darbe ve yük oluşturduğu için kemiği uyarır.' },
+                { letter: 'B', isCorrect: true, textHtml: '<span class="word" onclick="handleWord(this)">Kuntosaliharjoittelu<span class="tooltip-box">spor salonu direnç antrenmanı</span></span>', trSentence: 'Spor salonu direnç antrenmanı', reason: 'Neden Doğru: Kasların kemiğe çekme kuvveti uygulaması yeni kemik yapımını destekler.' },
+                { letter: 'C', isCorrect: false, textHtml: '<span class="word" onclick="handleWord(this)">Pelkkä<span class="tooltip-box">sadece</span></span> <span class="word" onclick="handleWord(this)">uinti<span class="tooltip-box">yüzme</span></span>', trSentence: 'Sadece yüzme', reason: 'Neden Yanlış: Suyun kaldırma kuvveti kemiğe binen yükü azalttığından osteoporoza karşı tek başına luuliikunta sayılmaz.' }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ];
 
   let appState = {
     activeThemeId: 'tema1',
+    activeTestId: 't1_temel',
     activeMode: 'summary',
     readSections: {},
     savedQuestionIdx: {},
@@ -1048,8 +1275,39 @@
     try { localStorage.setItem(STATE_KEY, JSON.stringify(appState)); } catch (e) {}
   }
 
+  function getThemeTests(theme) {
+    if (!theme) return [];
+    if (Array.isArray(theme.tests) && theme.tests.length > 0) return theme.tests;
+    if (Array.isArray(theme.questions) && theme.questions.length > 0) {
+      return [{
+        id: theme.id,
+        kind: theme.id === 'karma' ? 'deneme' : (String(theme.id).startsWith('tentti') ? 'tentti' : 'temel'),
+        kindLabel: theme.id === 'karma' ? 'Deneme' : (String(theme.id).startsWith('tentti') ? 'Orijinal Tentti' : 'Temel Test'),
+        title: theme.title,
+        desc: theme.desc || '',
+        questions: theme.questions
+      }];
+    }
+    return [];
+  }
+
   function getActiveTheme() {
-    return THEMES.find(t => t.id === appState.activeThemeId) || THEMES[0];
+    let found = THEMES.find(t => t.id === appState.activeThemeId);
+    if (!found && appState.activeThemeId) {
+      found = THEMES.find(t => getThemeTests(t).some(ts => ts.id === appState.activeThemeId));
+    }
+    return found || THEMES[0];
+  }
+
+  function getActiveTest() {
+    const t = getActiveTheme();
+    const tests = getThemeTests(t);
+    let ts = tests.find(x => x.id === appState.activeTestId);
+    if (!ts) {
+      ts = tests.find(x => x.id === appState.activeThemeId) || tests[0];
+    }
+    if (ts) appState.activeTestId = ts.id;
+    return ts || { id: t.id, kind: 'temel', kindLabel: 'Test', title: t.title, desc: t.desc, questions: [] };
   }
 
   function toggleThemeDropdown() {
@@ -1059,10 +1317,13 @@
   function renderThemeDropdown() {
     const panel = document.getElementById('theme-dd-panel');
     const active = getActiveTheme();
+    const activeTest = getActiveTest();
     panel.innerHTML = THEMES.map(t => {
-      const readCnt = t.sections.filter(s => appState.readSections[s.id]).length;
-      const readPct = Math.round((readCnt / t.sections.length) * 100);
-      const qIdx = (appState.savedQuestionIdx[t.id] || 0) + 1;
+      const secCount = (t.sections || []).length;
+      const readCnt = (t.sections || []).filter(s => appState.readSections[s.id]).length;
+      const readPct = secCount ? Math.round((readCnt / secCount) * 100) : null;
+      const tests = getThemeTests(t);
+      const totalQ = tests.reduce((acc, x) => acc + x.questions.length, 0);
       const isAct = t.id === active.id;
       return `
         <button type="button" class="theme-option-btn ${isAct ? 'active' : ''}" onclick="selectTheme('${t.id}')">
@@ -1071,29 +1332,105 @@
             <div class="theme-opt-sub">${t.desc}</div>
           </div>
           <div class="theme-opt-badges">
-            <span class="pill-read">&#x1F4D6; Özet %${readPct}</span>
-            <span class="pill-quiz">&#x1F4DD; Soru ${Math.min(qIdx, t.questions.length)}/${t.questions.length}</span>
+            ${readPct !== null ? `<span class="pill-read">&#x1F4D6; Özet %${readPct}</span>` : ''}
+            <span class="pill-quiz">&#x1F4DD; ${tests.length} Test (${totalQ} Soru)</span>
           </div>
         </button>
       `;
     }).join('');
 
-    const actRead = active.sections.filter(s => appState.readSections[s.id]).length;
-    const actPct = Math.round((actRead / active.sections.length) * 100);
-    const actIdx = (appState.savedQuestionIdx[active.id] || 0) + 1;
+    const actSecCnt = (active.sections || []).length;
+    const actRead = (active.sections || []).filter(s => appState.readSections[s.id]).length;
+    const actPct = actSecCnt ? Math.round((actRead / actSecCnt) * 100) : null;
+    const actTests = getThemeTests(active);
+    const actQs = activeTest.questions || [];
+    const actIdx = (appState.savedQuestionIdx[activeTest.id] ?? appState.savedQuestionIdx[active.id] ?? 0) + 1;
     document.getElementById('active-theme-label').textContent = '📂 ' + active.title;
-    document.getElementById('active-theme-badge').textContent = `Özet %${actPct} • Soru ${Math.min(actIdx, active.questions.length)}/${active.questions.length}`;
+    document.getElementById('active-theme-badge').textContent = actPct !== null
+      ? `Özet %${actPct} • ${actTests.length} Test • Soru ${actQs.length ? Math.min(actIdx, actQs.length) : 0}/${actQs.length}`
+      : `${actTests.length} Test • Soru ${actQs.length ? Math.min(actIdx, actQs.length) : 0}/${actQs.length}`;
+  }
+
+  function renderSubtestsPanel() {
+    const t = getActiveTheme();
+    const tests = getThemeTests(t);
+    const activeTest = getActiveTest();
+    const panel = document.getElementById('subtests-panel');
+    if (!panel) return;
+    if (!tests.length) {
+      panel.style.display = 'none';
+      return;
+    }
+    panel.style.display = 'flex';
+    const kindIcon = { temel: '📝', tarama: '🎯', deneme: '🧪', ekstra: '➕', tentti: '🏛️' };
+    panel.innerHTML = `
+      <div class="subtests-head">
+        <span>&#x1F4C1; Seçili Konudaki Testler (${tests.length} adet — çözmek istediğiniz testi seçin)</span>
+        <span style="color:var(--primary-light);">Aktif: ${activeTest.kindLabel || 'Test'}</span>
+      </div>
+      <div class="subtests-grid">
+        ${tests.map(ts => {
+          const isAct = ts.id === activeTest.id;
+          const totalQ = ts.questions.length;
+          let corr = 0, wr = 0;
+          ts.questions.forEach(q => {
+            const a = appState.answers[q.id];
+            if (a) { if (a.isCorrect) corr++; else wr++; }
+          });
+          const solved = corr + wr;
+          const pct = solved ? Math.round((corr / solved) * 100) : 0;
+          const pos = Math.min((appState.savedQuestionIdx[ts.id] || 0) + 1, Math.max(1, totalQ));
+          const ico = kindIcon[ts.kind] || '📝';
+          return `
+            <button type="button" class="subtest-card ${isAct ? 'active' : ''}" onclick="selectSubTest('${ts.id}')">
+              <div class="subtest-top">
+                <span class="kind-badge ${ts.kind || 'temel'}">${ico} ${ts.kindLabel || 'Test'}</span>
+                <span style="font-size:11px; color:var(--accent); font-weight:700;">Soru ${totalQ ? pos : 0}/${totalQ}</span>
+              </div>
+              <div class="subtest-title">${ts.title}</div>
+              ${ts.desc ? `<div class="subtest-desc">${ts.desc}</div>` : ''}
+              <div class="subtest-meta">
+                <span>Çözülen: ${solved}/${totalQ}</span>
+                <span>${solved ? `✓${corr} ✗${wr} (%${pct})` : 'Henüz başlanmadı'}</span>
+              </div>
+            </button>
+          `;
+        }).join('')}
+      </div>
+    `;
   }
 
   function selectTheme(id) {
     appState.activeThemeId = id;
+    const t = THEMES.find(x => x.id === id) || THEMES[0];
+    const tests = getThemeTests(t);
+    appState.activeTestId = tests[0] ? tests[0].id : id;
     appState.poolMode = 'all';
+    if (!t.sections || t.sections.length === 0) {
+      appState.activeMode = 'quiz';
+    }
+    const rBox = document.getElementById('report-box');
+    if (rBox) rBox.classList.remove('open');
     saveState();
     document.getElementById('theme-dd-panel').classList.remove('open');
     renderAll();
   }
 
+  function selectSubTest(testId) {
+    appState.activeTestId = testId;
+    appState.poolMode = 'all';
+    appState.activeMode = 'quiz';
+    const rBox = document.getElementById('report-box');
+    if (rBox) rBox.classList.remove('open');
+    saveState();
+    renderAll();
+  }
+
   function switchThemeMode(mode) {
+    const t = getActiveTheme();
+    if (mode === 'summary' && (!t.sections || t.sections.length === 0)) {
+      mode = 'quiz';
+    }
     appState.activeMode = mode;
     saveState();
     renderAll();
@@ -1101,22 +1438,35 @@
 
   function updateProgressUI() {
     const t = getActiveTheme();
-    const readCnt = t.sections.filter(s => appState.readSections[s.id]).length;
-    const readPct = Math.round((readCnt / t.sections.length) * 100);
-    document.getElementById('prog-read-text').textContent = `%${readPct} (${readCnt}/${t.sections.length} bölüm)`;
-    document.getElementById('prog-read-bar').style.width = readPct + '%';
+    const ts = getActiveTest();
+    const secCount = (t.sections || []).length;
+    const readWrap = document.getElementById('prog-read-wrap');
+    if (secCount > 0) {
+      readWrap.style.display = 'flex';
+      const readCnt = t.sections.filter(s => appState.readSections[s.id]).length;
+      const readPct = Math.round((readCnt / secCount) * 100);
+      document.getElementById('prog-read-text').textContent = `%${readPct} (${readCnt}/${secCount} bölüm)`;
+      document.getElementById('prog-read-bar').style.width = readPct + '%';
+    } else {
+      readWrap.style.display = 'none';
+    }
 
-    const totalQ = t.questions.length;
-    const solvedCnt = t.questions.filter(q => appState.answers[q.id] !== undefined).length;
-    const curIdx = Math.min(appState.savedQuestionIdx[t.id] || 0, Math.max(0, totalQ - 1));
-    document.getElementById('prog-quiz-pos').textContent = `📝 Kalınan Yer: Soru ${curIdx + 1} / ${totalQ}`;
+    const totalQ = ts.questions.length;
+    const solvedCnt = ts.questions.filter(q => appState.answers[q.id] !== undefined).length;
+    const curIdx = Math.min(appState.savedQuestionIdx[ts.id] ?? appState.savedQuestionIdx[t.id] ?? 0, Math.max(0, totalQ - 1));
+    document.getElementById('prog-quiz-pos').textContent = `📝 ${ts.kindLabel || 'Test'}: Soru ${totalQ ? curIdx + 1 : 0} / ${totalQ}`;
     document.getElementById('prog-quiz-pct').textContent = `${solvedCnt}/${totalQ} çözüldü`;
     document.getElementById('prog-quiz-bar').style.width = (totalQ ? Math.round((solvedCnt / totalQ) * 100) : 0) + '%';
   }
 
   function renderSummary() {
     const t = getActiveTheme();
+    const ts = getActiveTest();
     const container = document.getElementById('summary-panel');
+    if (!t.sections || t.sections.length === 0) {
+      container.innerHTML = '';
+      return;
+    }
     let html = t.sections.map((s, idx) => {
       const isRead = !!appState.readSections[s.id];
       const tableHtml = s.table ? `
@@ -1143,7 +1493,7 @@
         </div>
       `;
     }).join('');
-    html += `<button type="button" class="go-quiz-cta" onclick="switchThemeMode('quiz')">&#x1F4DD; ${t.title} Sorularına Geç &rarr;</button>`;
+    html += `<button type="button" class="go-quiz-cta" onclick="switchThemeMode('quiz')">&#x1F4DD; ${ts.title} Testine Geç &rarr;</button>`;
     container.innerHTML = html;
   }
 
@@ -1156,10 +1506,10 @@
   }
 
   function getFilteredQuestions() {
-    const t = getActiveTheme();
-    if (appState.poolMode === 'wrong') return t.questions.filter(q => appState.wrongPool.includes(q.id));
-    if (appState.poolMode === 'star') return t.questions.filter(q => appState.starPool.includes(q.id));
-    return t.questions;
+    const ts = getActiveTest();
+    if (appState.poolMode === 'wrong') return ts.questions.filter(q => appState.wrongPool.includes(q.id));
+    if (appState.poolMode === 'star') return ts.questions.filter(q => appState.starPool.includes(q.id));
+    return ts.questions;
   }
 
   function setPoolMode(mode) {
@@ -1170,10 +1520,11 @@
 
   function renderQuiz() {
     const t = getActiveTheme();
+    const ts = getActiveTest();
     const list = getFilteredQuestions();
-    const wrongCnt = t.questions.filter(q => appState.wrongPool.includes(q.id)).length;
-    const starCnt = t.questions.filter(q => appState.starPool.includes(q.id)).length;
-    document.getElementById('pool-all-cnt').textContent = t.questions.length;
+    const wrongCnt = ts.questions.filter(q => appState.wrongPool.includes(q.id)).length;
+    const starCnt = ts.questions.filter(q => appState.starPool.includes(q.id)).length;
+    document.getElementById('pool-all-cnt').textContent = ts.questions.length;
     document.getElementById('pool-wrong-cnt').textContent = wrongCnt;
     document.getElementById('pool-star-cnt').textContent = starCnt;
     ['all', 'wrong', 'star'].forEach(m => {
@@ -1181,7 +1532,7 @@
     });
 
     let corrCnt = 0, wrCnt = 0;
-    t.questions.forEach(q => {
+    ts.questions.forEach(q => {
       const ans = appState.answers[q.id];
       if (ans) { if (ans.isCorrect) corrCnt++; else wrCnt++; }
     });
@@ -1198,9 +1549,9 @@
       return;
     }
 
-    let idx = appState.savedQuestionIdx[t.id] || 0;
+    let idx = appState.savedQuestionIdx[ts.id] ?? appState.savedQuestionIdx[t.id] ?? 0;
     if (idx >= list.length) idx = 0;
-    appState.savedQuestionIdx[t.id] = idx;
+    appState.savedQuestionIdx[ts.id] = idx;
     const q = list[idx];
 
     document.getElementById('badge-title').textContent = `📄 KYSYMYS ${idx + 1} / ${list.length}`;
@@ -1256,8 +1607,8 @@
   function toggleOption(letter, evt) {
     if (evt && evt.target && evt.target.classList.contains('word')) return;
     const list = getFilteredQuestions();
-    const t = getActiveTheme();
-    const q = list[appState.savedQuestionIdx[t.id] || 0];
+    const ts = getActiveTest();
+    const q = list[appState.savedQuestionIdx[ts.id] || 0];
     if (!q || appState.answers[q.id]) return;
 
     if (q.isMulti) {
@@ -1274,8 +1625,8 @@
 
   function submitAnswer() {
     const list = getFilteredQuestions();
-    const t = getActiveTheme();
-    const q = list[appState.savedQuestionIdx[t.id] || 0];
+    const ts = getActiveTest();
+    const q = list[appState.savedQuestionIdx[ts.id] || 0];
     if (!q) return;
     if (currentSelected.size === 0) {
       alert('Lütfen önce en az bir şık işaretleyin.');
@@ -1290,13 +1641,14 @@
     clearInterval(timerInt);
     updateProgressUI();
     renderThemeDropdown();
+    renderSubtestsPanel();
     renderQuiz();
   }
 
   function revealAnalysisPreview() {
     const list = getFilteredQuestions();
-    const t = getActiveTheme();
-    const q = list[appState.savedQuestionIdx[t.id] || 0];
+    const ts = getActiveTest();
+    const q = list[appState.savedQuestionIdx[ts.id] || 0];
     if (!q) return;
     renderAnalysisCard(q, 'preview');
   }
@@ -1339,46 +1691,134 @@
     card.classList.add('show');
   }
 
+  function exportTestReport() {
+    const t = getActiveTheme();
+    const ts = getActiveTest();
+    const qs = ts.questions || [];
+    let corr = 0, wr = 0;
+    const secStats = {};
+    const wrongItems = [];
+    const starItems = [];
+    qs.forEach((q, idx) => {
+      const sec = q.section || 'Genel';
+      if (!secStats[sec]) secStats[sec] = { total: 0, solved: 0, corr: 0, wr: 0 };
+      secStats[sec].total++;
+      const a = appState.answers[q.id];
+      if (a) {
+        secStats[sec].solved++;
+        if (a.isCorrect) { corr++; secStats[sec].corr++; }
+        else {
+          wr++;
+          secStats[sec].wr++;
+          wrongItems.push(`- [Soru ${idx + 1} | ID:${q.id}] ${sec}: Seçilen=${(a.selected || []).join(',')} | Doğru=${q.correctAnswer} | Konu: ${q.tarppi}`);
+        }
+      }
+      if (appState.starPool.includes(q.id)) {
+        starItems.push(`- [Soru ${idx + 1} | ID:${q.id}] ${sec}: ${q.tarppi}`);
+      }
+    });
+    const solved = corr + wr;
+    const pct = solved ? Math.round((corr / solved) * 100) : 0;
+    const userLabel = (typeof PORTAL_USER !== 'undefined' ? PORTAL_USER : 'hkn');
+    const secLines = Object.entries(secStats)
+      .sort((a, b) => (a[1].solved ? a[1].corr / a[1].solved : 2) - (b[1].solved ? b[1].corr / b[1].solved : 2))
+      .map(([sec, st]) => {
+        if (!st.solved) return `- ⏳ ${sec}: Çözülmedi (0/${st.total})`;
+        const sp = Math.round((st.corr / st.solved) * 100);
+        const flag = sp < 70 ? '⚠️ ZAYIF' : '✅ İYİ';
+        return `- ${flag} ${sec}: ${st.corr}/${st.solved} doğru (%${sp})`;
+      });
+    const lines = [
+      `=== HAMK TEST / TARAMA SONUÇ RAPORU ===`,
+      `Ders: ${document.title}`,
+      `Profil: ${userLabel} | Tarih: ${new Date().toLocaleString('tr-TR')}`,
+      `Kategori: ${t.title}`,
+      `Test: ${ts.title}`,
+      `Özet Skor: ${solved}/${qs.length} çözüldü | ✓ ${corr} Doğru | ✗ ${wr} Yanlış | Başarı: %${pct}`,
+      ``,
+      `KONU / TEMA BAZLI DAĞILIM:`,
+      ...secLines,
+      ``,
+      `YANLIŞ YAPILAN SORULAR (${wrongItems.length}):`,
+      ...(wrongItems.length ? wrongItems : ['- Yok']),
+      ``,
+      `YILDIZLANAN SORULAR (${starItems.length}):`,
+      ...(starItems.length ? starItems : ['- Yok']),
+      ``,
+      `İSTEK: Yukarıdaki sonuçlara göre zayıf konular ve yanlış yapılan sorular için ihtiyaca özel yeni ekstra/tarama soruları hazırlayabilir misin?`
+    ];
+    const reportText = lines.join('\n');
+    const box = document.getElementById('report-box');
+    const ta = document.getElementById('report-textarea');
+    const stEl = document.getElementById('report-status');
+    ta.value = reportText;
+    box.classList.add('open');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(reportText).then(() => {
+        if (stEl) stEl.textContent = '✅ Sonuç raporu panoya kopyalandı! Sohbete yapıştırabilirsiniz.';
+      }).catch(() => {
+        if (stEl) stEl.textContent = '📋 Rapor hazır — aşağıdaki "Kopyala" butonuna basıp sohbete yapıştırın.';
+      });
+    } else if (stEl) {
+      stEl.textContent = '📋 Rapor hazır — aşağıdaki "Kopyala" butonuna basıp sohbete yapıştırın.';
+    }
+  }
+
+  function copyReportTextarea() {
+    const ta = document.getElementById('report-textarea');
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ta.value).catch(() => {});
+    }
+    const stEl = document.getElementById('report-status');
+    if (stEl) stEl.textContent = '✅ Kopyalandı! Şimdi sohbete yapıştırabilirsiniz.';
+  }
+
   function repeatQuestion() {
     const list = getFilteredQuestions();
-    const t = getActiveTheme();
-    const q = list[appState.savedQuestionIdx[t.id] || 0];
+    const ts = getActiveTest();
+    const q = list[appState.savedQuestionIdx[ts.id] || 0];
     if (!q) return;
     delete appState.answers[q.id];
     currentSelected = new Set();
     saveState();
     updateProgressUI();
+    renderSubtestsPanel();
     renderQuiz();
   }
 
   function prevQuestion() {
     const list = getFilteredQuestions();
     if (!list.length) return;
-    const t = getActiveTheme();
-    let idx = appState.savedQuestionIdx[t.id] || 0;
-    appState.savedQuestionIdx[t.id] = (idx - 1 + list.length) % list.length;
+    const ts = getActiveTest();
+    let idx = appState.savedQuestionIdx[ts.id] || 0;
+    appState.savedQuestionIdx[ts.id] = (idx - 1 + list.length) % list.length;
     saveState();
     updateProgressUI();
     renderThemeDropdown();
+    renderSubtestsPanel();
     renderQuiz();
   }
 
   function nextQuestion() {
     const list = getFilteredQuestions();
     if (!list.length) return;
-    const t = getActiveTheme();
-    let idx = appState.savedQuestionIdx[t.id] || 0;
-    appState.savedQuestionIdx[t.id] = (idx + 1) % list.length;
+    const ts = getActiveTest();
+    let idx = appState.savedQuestionIdx[ts.id] || 0;
+    appState.savedQuestionIdx[ts.id] = (idx + 1) % list.length;
     saveState();
     updateProgressUI();
     renderThemeDropdown();
+    renderSubtestsPanel();
     renderQuiz();
   }
 
   function toggleStar() {
     const list = getFilteredQuestions();
-    const t = getActiveTheme();
-    const q = list[appState.savedQuestionIdx[t.id] || 0];
+    const ts = getActiveTest();
+    const q = list[appState.savedQuestionIdx[ts.id] || 0];
     if (!q) return;
     if (appState.starPool.includes(q.id)) appState.starPool = appState.starPool.filter(id => id !== q.id);
     else appState.starPool.push(q.id);
@@ -1454,14 +1894,26 @@
   }
 
   function renderAll() {
+    const t = getActiveTheme();
+    const hasSummary = Array.isArray(t.sections) && t.sections.length > 0;
+    if (!hasSummary && appState.activeMode === 'summary') {
+      appState.activeMode = 'quiz';
+    }
+    const modeTabs = document.getElementById('theme-mode-tabs');
+    if (modeTabs) modeTabs.style.display = hasSummary ? 'grid' : 'none';
+    const progStrip = document.getElementById('progress-strip');
+    if (progStrip) progStrip.style.gridTemplateColumns = hasSummary ? '1fr 1fr' : '1fr';
+
     renderThemeDropdown();
+    renderSubtestsPanel();
     updateProgressUI();
+
     document.getElementById('mode-tab-summary').classList.toggle('active', appState.activeMode === 'summary');
     document.getElementById('mode-tab-quiz').classList.toggle('active', appState.activeMode === 'quiz');
-    document.getElementById('summary-panel').classList.toggle('active', appState.activeMode === 'summary');
-    document.getElementById('quiz-panel').classList.toggle('active', appState.activeMode === 'quiz');
+    document.getElementById('summary-panel').classList.toggle('active', appState.activeMode === 'summary' && hasSummary);
+    document.getElementById('quiz-panel').classList.toggle('active', appState.activeMode === 'quiz' || !hasSummary);
 
-    if (appState.activeMode === 'summary') {
+    if (appState.activeMode === 'summary' && hasSummary) {
       clearInterval(timerInt);
       renderSummary();
     } else {

@@ -1,0 +1,17 @@
+name: Dersler Veritabani Canli Tut
+
+on:
+  schedule:
+    - cron: '0 9 */3 * *'
+  workflow_dispatch:
+
+jobs:
+  ping-database:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Veritabanina hafif ping at
+        run: |
+          curl -fsS \
+            -H "apikey: sb_publishable_pR75ite5GJa7L8mTUWIZwg_ea6913dD" \
+            -H "Authorization: Bearer sb_publishable_pR75ite5GJa7L8mTUWIZwg_ea6913dD" \
+            "https://lesrkpvhaywdwdhpehcn.supabase.co/rest/v1/hamk_ders_ilerleme?select=kullanici&limit=1"
